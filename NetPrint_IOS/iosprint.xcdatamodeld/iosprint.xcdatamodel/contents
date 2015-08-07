@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="7701" systemVersion="14C109" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
+    <entity name="Cart" representedClassName="Cart" syncable="YES">
+        <attribute name="cartId" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="detail" optional="YES" attributeType="Binary" syncable="YES"/>
+        <attribute name="goodsId" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="goodsName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="num" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="price" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="Goods" representedClassName="Goods" syncable="YES">
+        <attribute name="gid" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="marketprice" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="photosizeid" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="phototextureid" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="photowrapid" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="PhotoSize" representedClassName="PhotoSize" syncable="YES">
+        <attribute name="factheight" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="factwidth" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="minpixelheight" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="mixpixelwidth" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="order" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="photosizeid" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="type" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="PhotoTexture" representedClassName="PhotoTexture" syncable="YES">
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="phototextureid" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="sort" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="type" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <elements>
+        <element name="Cart" positionX="-45" positionY="45" width="128" height="135"/>
+        <element name="Goods" positionX="-36" positionY="9" width="128" height="135"/>
+        <element name="PhotoSize" positionX="-63" positionY="-18" width="128" height="165"/>
+        <element name="PhotoTexture" positionX="-54" positionY="-9" width="128" height="105"/>
+    </elements>
+</model>
