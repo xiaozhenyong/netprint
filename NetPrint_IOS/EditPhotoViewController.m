@@ -315,10 +315,15 @@
     rect.size.height = imageViewH;
     self.assetImageView.layer.frame = rect;
     
+    /*
     self.assetImageView.image = image;
     self.assetImageView.center = CGPointMake(self.editPhoto.frame.size.width/2, self.editPhoto.frame.size.height/2);
+    */
+    CGSize blankImageSize = CGSizeMake(self.editPhoto.frame.size.width, self.editPhoto.frame.size.height);
     
-    [image drawInRect:CGRectMake(0, 0, imageViewW, imageViewH)];
+    UIGraphicsBeginImageContextWithOptions(blankImageSize, YES, [UIScreen mainScreen]scale);
+    [UIColor blackColor]
+    
     
     editFlag = 1;
 }
