@@ -2,7 +2,7 @@
 //  PhotoSize.m
 //  NetPrint_IOS
 //
-//  Created by sjkysjky on 15/6/26.
+//  Created by sjkysjky on 15/8/11.
 //  Copyright (c) 2015年 世纪开元. All rights reserved.
 //
 
@@ -11,13 +11,13 @@
 
 @implementation PhotoSize
 
-@dynamic name;
-@dynamic photosizeid;
-@dynamic mixpixelwidth;
-@dynamic minpixelheight;
-@dynamic factwidth;
 @dynamic factheight;
-@dynamic type;
+@dynamic factwidth;
+@dynamic minpixelheight;
+@dynamic mixpixelwidth;
+@dynamic name;
 @dynamic order;
+@dynamic photosizeid;
+@dynamic type;
 
 @end
