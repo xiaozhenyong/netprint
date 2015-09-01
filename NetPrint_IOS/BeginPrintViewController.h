@@ -9,18 +9,26 @@
 #import <UIKit/UIKit.h>
 #import "DefineData.h"
 #import "NSString+URLEncoding.h"
-#import "NSNumber+Message.h"
 #import "AppDelegate.h"
 #import "Goods.h"
 #import "PhotoSize.h"
 #import "PhotoTexture.h"
 #import "Goods.h"
 
-@interface BeginPrintViewController : UIViewController
+@interface BeginPrintViewController : UIViewController<UIPickerViewDataSource,UIPickerViewDelegate,UITextFieldDelegate>
 
-
+/*
 @property (weak, nonatomic) IBOutlet UIView *photoSize;
 @property (strong, nonatomic) IBOutlet UIView *photoTexture;
+*/
+@property (strong, nonatomic) IBOutlet UITextField *photoSizeText;
+@property (strong, nonatomic) IBOutlet UITextField *photoTextureText;
+
+@property (strong, nonatomic) IBOutlet UIPickerView *photoSizePicker;
+
+@property (strong, nonatomic) IBOutlet UIPickerView *photoTexturePicker;
+
+
 @property (weak, nonatomic) IBOutlet UISwitch *open;
 
 - (IBAction)back:(id)sender;

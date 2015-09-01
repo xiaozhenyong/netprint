@@ -15,6 +15,11 @@
     CGSize AssetThumbnailSize;
     Goods *goods;
     PhotoSize *photoSize;
+    NSInteger pIndex;
+    NSString *pNum;
+    NSMutableArray *dicArray;
+    UIImage *bgImage;
+    CGRect imageRegion;
 }
 
 @end
@@ -27,6 +32,11 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    pIndex = -1;
+    pNum = @"1";
+    
+    dicArray = [[NSMutableArray alloc]init];
+    
     _appDelegate = (AppDelegate *)[[UIApplication sharedApplication]delegate];
     
     goods = [self.goodsArray objectAtIndex:0];
@@ -34,9 +44,55 @@
     
     self.photoCount.text = [NSString stringWithFormat:@"%ld",[self.dataArray count]];
 
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(getAssetWithNotification:) name:@"editPhotoData" object:nil];
+    
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(pldAssetWithNotification:) name:@"pldPhotoData" object:nil];
     
     [self initCollentionView];
     [self getPhotoSizeWithGoods];
+    [self initImageAsset];
+    
+}
+
+- (void)getAssetWithNotification:(NSNotification *)notification{
+
+    NSDictionary *info = [notification userInfo];
+    pNum = [info valueForKey:@"photoNum"];
+    NSInteger sum = [pNum integerValue] + [self.dataArray count] - 1;
+    self.photoCount.text = [NSString stringWithFormat:@"%ld",sum];
+    
+    pIndex = [[info valueForKey:@"index"] integerValue];
+    NSURL *pAsset = [info valueForKey:@"newAsset"];
+    
+    if (pAsset != nil) {
+        NSDictionary *dic = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInteger:[pNum integerValue]],@"num",[NSString stringWithFormat:@"%@",pAsset],@"path",@"",@"set", nil];
+        [dicArray removeObjectAtIndex:pIndex];
+        [dicArray addObject:dic];
+    }else{
+        ALAsset *a=[dataArray objectAtIndex:pIndex];
+        NSDictionary *dic = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInteger:[pNum integerValue]],@"num",[NSString stringWithFormat:@"%@",[[a defaultRepresentation]url]],@"path",@"",@"set", nil];
+        [dicArray removeObjectAtIndex:pIndex];
+        [dicArray addObject:dic];
+    }
+    
+    [self.showPhoto reloadData];
+}
+
+- (void)pldAssetWithNotification:(NSNotification *)notification{
+    NSDictionary *info = [notification userInfo];
+    pNum = [info valueForKey:@"photoNum"];
+    
+    NSInteger sum = [pNum integerValue] + [self.dataArray count]-1;
+    self.photoCount.text = [NSString stringWithFormat:@"%ld",sum];
+    
+    pIndex = [[info valueForKey:@"index"] integerValue];
+    NSString *pAsset = [info valueForKey:@"asseturl"];
+    
+    NSDictionary *dic = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInteger:[pNum integerValue]],@"num",pAsset,@"path",[info valueForKey:@"setV"],@"set", nil];
+    [dicArray removeObjectAtIndex:pIndex];
+    [dicArray addObject:dic];
+    
+    [self.showPhoto reloadData];
 }
 
 - (void)getPhotoSizeWithGoods{
@@ -70,6 +126,35 @@
     
 }
 
+- (void) initImageAsset{
+    
+    NSInteger order = [photoSize.order integerValue];
+    
+    switch (order) {
+        case 0:
+            bgImage = [UIImage imageNamed:@"pld_3c.png"];
+            imageRegion = CGRectMake(64, 64, 686, 969);
+            break;
+        case 1:
+            bgImage = [UIImage imageNamed:@"pld_4c.png"];
+            imageRegion = CGRectMake(65, 65, 832, 1115);
+            break;
+        case 2:
+            bgImage = [UIImage imageNamed:@"pld_5c.png"];
+            imageRegion = CGRectMake(84, 84, 882, 1182);
+            break;
+        case 3:
+            bgImage = [UIImage imageNamed:@"pld_6c.png"];
+            imageRegion = CGRectMake(80, 80, 942, 1280);
+            break;
+        default:
+            NSLog(@"bgImage is error");
+            break;
+    }
+    
+    
+}
+
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
     return [self.dataArray count];
@@ -77,7 +162,6 @@
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
 
-    //UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"Cell" forIndexPath:indexPath];
     static NSString *cellName = @"selPhotoShowCollectionViewCell";
     static BOOL nibPhotoCell = NO;
     if (!nibPhotoCell) {
@@ -89,11 +173,68 @@
     SelPhotoShowCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"selPhotoShowCollectionViewCell" forIndexPath:indexPath];
     
     ALAsset *alasset = [self.dataArray objectAtIndex:indexPath.row];
-    
+    ALAssetRepresentation *rep = [alasset defaultRepresentation];
     CGImageRef ref = [alasset aspectRatioThumbnail];
 
     UIImage *image = [UIImage imageWithCGImage:ref];
+    NSInteger _photoNum;
     
+    if (pIndex != -1 && pIndex == [indexPath row]) {
+        cell.photoNum.text = pNum;
+    }else{
+        cell.photoNum.text = @"1";
+        _photoNum = 1;
+        
+        NSDictionary *dic ;
+        
+        if ([@"0" isEqualToString:self.flag] || [@"1" isEqualToString:self.flag]) {
+            
+            dic = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInteger: _photoNum],@"num",[NSString stringWithFormat:@"%@",[rep url]],@"path",@"",@"set", nil];
+        }else{
+            Byte *buffer = (Byte *)malloc([rep size]);
+            NSUInteger buffered = [rep getBytes:buffer fromOffset:0 length:[rep size] error:nil];
+            NSData *imageData = [NSData dataWithBytesNoCopy:buffer length:buffered];
+            UIImage *editImage = [UIImage imageWithData:imageData];
+
+            
+            PldInCollectionView *p = [[PldInCollectionView alloc]initWithFrame:CGRectMake(0.0, 0.0, 281, 464)];
+            
+            p.bgImage = bgImage;
+            p.assetImage = editImage;
+            p.imageRect = imageRegion;
+            [p setViewSize];
+            
+            CGSize _size = p.bgSize;//遮罩层
+            CGRect _rect = p.editRect;//图片区域、
+            
+            NSInteger _rotate = p.rotate;//是否翻转
+            NSString *_path = [NSString stringWithFormat:@"%@",[rep url]];
+            
+            NSDictionary *setDic = [NSDictionary dictionaryWithObjectsAndKeys:
+                                    _path,@"path",
+                                    [NSNumber numberWithInteger:_size.width],@"width",
+                                    [NSNumber numberWithInteger:_size.height],@"height",
+                                    [NSNumber numberWithInteger:_rect.size.width],@"imageWidth",
+                                    [NSNumber numberWithInteger:_rect.size.height],@"imageHeight",
+                                    [NSNumber numberWithInteger:_rect.origin.x],@"left",
+                                    [NSNumber numberWithInteger:_rect.origin.y],@"top",
+                                    [NSNumber numberWithBool:NO],@"isEdited",
+                                    [NSNumber numberWithInteger:1],@"num",
+                                    [NSNumber numberWithInteger: [photoSize.order integerValue]],@"templateId",
+                                    [NSNumber numberWithInteger: _rotate],@"rotate", nil];
+            
+            
+            NSData *jsonData = [NSJSONSerialization dataWithJSONObject:setDic options:NSJSONWritingPrettyPrinted error:nil];
+            NSString *jsonString = [[NSString alloc]initWithData:jsonData encoding:NSUTF8StringEncoding];
+            
+            NSLog(@"json--->%@",jsonString);
+            
+            dic = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInteger: _photoNum],@"num",[NSString stringWithFormat:@"%@",[rep url]],@"path",jsonString,@"set", nil];
+        }
+        
+        [dicArray addObject:dic];
+    }
+
     cell.selectedPhoto.image = image;
     cell.editPhotoBut.tag = [indexPath row]+50;
     [cell.editPhotoBut addTarget:self action:@selector(editPhoto:) forControlEvents:UIControlEventTouchDown];
@@ -105,16 +246,24 @@
 - (void)editPhoto:(id)sender{
     NSInteger arrayIndex = ((UIButton *)sender).tag-50;
     ALAsset *asset = [self.dataArray objectAtIndex:arrayIndex];
-    
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     //ALAssetRepresentation *rep = [asset defaultRepresentation];
     //[self getImagePixValueWithALAssetRepresention:rep];
+    if ([@"0" isEqualToString:self.flag] || [@"1" isEqualToString:self.flag]) {//0-普通冲印，1-证件照
+        EditPhotoViewController *editPhoto = [storyboard instantiateViewControllerWithIdentifier:@"editPhotoViewController"];
+        editPhoto.asset = asset;
+        editPhoto.ps = photoSize;
+        editPhoto.arrayIndex = arrayIndex;
+        [self presentViewController:editPhoto animated:YES completion:nil];
+    }else{//2-拍立得
     
-    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-    EditPhotoViewController *editPhoto = [storyboard instantiateViewControllerWithIdentifier:@"editPhotoViewController"];
-    editPhoto.asset = asset;
-    editPhoto.ps = photoSize;
-    editPhoto.arrayIndex = arrayIndex;
-    [self presentViewController:editPhoto animated:YES completion:nil];
+        EditPldViewController *editPld = [storyboard instantiateViewControllerWithIdentifier:@"editPldViewController"];
+        editPld.photoAsset = asset;
+        editPld.photoSize = photoSize;
+        editPld.arrayIndex = arrayIndex;
+        [self presentViewController:editPld animated:YES completion:nil];
+    }
+    
 }
 - (UIImage *)getImagePixValueWithALAssetRepresention:(ALAssetRepresentation *)rep{
 
@@ -122,7 +271,7 @@
     NSUInteger buffered = [rep getBytes:buffer fromOffset:0 length:[rep size] error:nil];
     NSData *data = [NSData dataWithBytesNoCopy:buffer length:buffered];
     UIImage *image = [UIImage imageWithData:data];
-    NSLog(@"imagew----->%f",image.size.width);
+    
     return image;
 }
 /*
@@ -144,28 +293,22 @@
     CartViewController *cart = [storyboard instantiateViewControllerWithIdentifier:@"cartViewController"];
     cart.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
     
-    NSMutableArray *_array = [[NSMutableArray alloc]init];
-    NSString *assetNum = @"1";
-    for (ALAsset *a in self.dataArray) {
-        NSDictionary *dic = [NSDictionary dictionaryWithObjectsAndKeys:[NSString stringWithFormat:@"%@",[a valueForProperty:ALAssetPropertyAssetURL]],@"path",assetNum,@"num", nil];
-        [_array addObject:dic];
-    }
-    
-//    NSData *data = [NSKeyedArchiver archivedDataWithRootObject:_array];
+  //    NSData *data = [NSKeyedArchiver archivedDataWithRootObject:_array];
 //    NSMutableArray *dicArray = [NSKeyedUnarchiver unarchiveObjectWithData:data];
-//    NSLog(@"------dicData ---->%ld",[dicArray count]);
+    NSLog(@"------dicData ---->%ld",[dicArray count]);
     
-    BOOL saveSuccess = [self insertCartGoodsArray:self.goodsArray assetData:_array];
+    BOOL saveSuccess = [self insertCartGoodsArray:self.goodsArray assetData:dicArray];
     if (!saveSuccess) {
         UIAlertView *alertView = [[UIAlertView alloc]initWithTitle:@"Attention" message:@"保存购物车出错！" delegate:nil cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
         [alertView show];
-    }
-    
-    [self presentViewController:cart animated:YES completion:nil];
-     
+    }else{
+        [self presentViewController:cart animated:YES completion:nil];
+    }     
 }
 
 - (BOOL) insertCartGoodsArray:(NSMutableArray *)gArray assetData:(NSMutableArray *)aArray{
+    
+    NSInteger photoSum = [self.photoCount.text integerValue];
     
     NSError *error = nil;
     if (gArray && aArray) {
@@ -174,18 +317,15 @@
         
         [cart setGoodsId:g.gid];
         [cart setGoodsName:g.name];
-        [cart setNum:[NSString stringWithFormat:@"%ld",[aArray count]]];
+        [cart setNum:[NSString stringWithFormat:@"%ld",photoSum]];
         
         [cart setDetail:[NSKeyedArchiver archivedDataWithRootObject:aArray]];
         
         
         NSDecimalNumber *_price = [NSDecimalNumber decimalNumberWithString:g.marketprice];
         
-        NSLog(@"-----marketprice------>%@",g.marketprice);
         
-        NSDecimalNumber *_num = [NSDecimalNumber decimalNumberWithString:[NSString stringWithFormat:@"%ld",[aArray count]]];
-        
-        NSLog(@"-----num-------------->%ld",[aArray count]);
+        NSDecimalNumber *_num = [NSDecimalNumber decimalNumberWithString:[NSString stringWithFormat:@"%ld",photoSum]];
         
         NSDecimalNumber *_totalPrice = [_price decimalNumberByMultiplyingBy:_num];
         
@@ -231,8 +371,6 @@
     
     [cartId appendString:vMin];
     [cartId appendString:vSec];
-    
-    NSLog(@"----->%@",cartId);
     
     return cartId;
 }

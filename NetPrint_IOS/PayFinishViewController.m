@@ -8,7 +8,10 @@
 
 #import "PayFinishViewController.h"
 
-@interface PayFinishViewController ()
+@interface PayFinishViewController (){
+    UIStoryboard *storyboard;
+    NSDictionary *uInfo;
+}
 
 @end
 
@@ -16,7 +19,12 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
+    storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(getUserInfoWithNotification:) name:@"payFinishNoti" object:nil];
+}
+
+- (void)getUserInfoWithNotification:(NSNotification *)notification{
+    uInfo = [notification userInfo];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -34,4 +42,24 @@
 }
 */
 
+- (IBAction)toViewController:(id)sender {
+    ViewController *viewCon = [storyboard instantiateViewControllerWithIdentifier:@"viewController"];
+    [self presentViewController:viewCon animated:YES completion:^{
+        [[NSNotificationCenter defaultCenter]postNotificationName:@"userInfo" object:nil userInfo:uInfo];
+    }];
+}
+
+- (IBAction)toCartViewController:(id)sender {
+    CartViewController *cartViewCon = [storyboard instantiateViewControllerWithIdentifier:@"cartViewController"];
+    [self presentViewController:cartViewCon animated:YES completion:^{
+        [[NSNotificationCenter defaultCenter]postNotificationName:@"userInfo" object:nil userInfo:uInfo];
+    }];
+}
+
+- (IBAction)toUserIndexViewController:(id)sender {
+    UserIndexViewController *userIndexViewCon = [storyboard instantiateViewControllerWithIdentifier:@"userIndexController"];
+    [self presentViewController:userIndexViewCon animated:YES completion:^{
+        [[NSNotificationCenter defaultCenter]postNotificationName:@"userInfo" object:nil userInfo:uInfo];
+    }];
+}
 @end

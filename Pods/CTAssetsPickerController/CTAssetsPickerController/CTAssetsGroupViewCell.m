@@ -25,9 +25,8 @@
  
  */
 
-#import "CTAssetsPickerCommon.h"
+#import "CTAssetsPickerConstants.h"
 #import "CTAssetsGroupViewCell.h"
-#import "NSBundle+CTAssetsPickerController.h"
 
 
 
@@ -62,7 +61,7 @@
     
     CGImageRef posterImage      = assetsGroup.posterImage;
     size_t height               = CGImageGetHeight(posterImage);
-    float scale                 = height / (CTAssetThumbnailLength);
+    float scale                 = height / kThumbnailLength;
     
     self.imageView.image        = [UIImage imageWithCGImage:posterImage scale:scale orientation:UIImageOrientationUp];
     self.textLabel.text         = [assetsGroup valueForProperty:ALAssetsGroupPropertyName];
@@ -79,7 +78,7 @@
 {
     NSString *label = [self.assetsGroup valueForProperty:ALAssetsGroupPropertyName];
     
-    return [label stringByAppendingFormat:CTAssetsPickerControllerLocalizedString(@"%ld Photos"), (long)self.assetsGroup.numberOfAssets];
+    return [label stringByAppendingFormat:NSLocalizedString(@"%ld Photos", nil), (long)self.assetsGroup.numberOfAssets];
 }
 
 @end

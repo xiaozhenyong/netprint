@@ -25,12 +25,11 @@
  
  */
 
-#import "CTAssetsPickerCommon.h"
+#import "CTAssetsPickerConstants.h"
 #import "CTAssetsPickerController.h"
 #import "CTAssetsGroupViewController.h"
 #import "CTAssetsGroupViewCell.h"
 #import "CTAssetsViewController.h"
-#import "NSBundle+CTAssetsPickerController.h"
 
 
 
@@ -65,7 +64,7 @@
 {
     if (self = [super initWithStyle:UITableViewStylePlain])
     {
-        self.preferredContentSize = CTAssetPickerPopoverContentSize;
+        self.preferredContentSize = kPopoverContentSize;
         [self addNotificationObserver];
     }
     
@@ -113,7 +112,7 @@
 
 - (void)setupViews
 {
-    self.tableView.rowHeight = CTAssetThumbnailLength + 12;
+    self.tableView.rowHeight = kThumbnailLength + 12;
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
 }
 
@@ -121,35 +120,34 @@
 {
     if (self.picker.showsCancelButton)
     {
-/*        self.navigationItem.leftBarButtonItem =
-        [[UIBarButtonItem alloc] initWithTitle:CTAssetsPickerControllerLocalizedString(@"Cancel")
-                                         style:UIBarButtonItemStylePlain
-                                        target:self.picker
-                                        action:@selector(dismiss:)];
- */
+        /*
         self.navigationItem.leftBarButtonItem =
-        [[UIBarButtonItem alloc] initWithTitle:CTAssetsPickerControllerLocalizedString(@"<")
+        [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Cancel", nil)
                                          style:UIBarButtonItemStylePlain
                                         target:self.picker
                                         action:@selector(dismiss:)];
-
+         */
+        self.navigationItem.leftBarButtonItem =
+        [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"取消", nil)
+                                         style:UIBarButtonItemStylePlain
+                                        target:self.picker
+                                        action:@selector(dismiss:)];
     }
+    /*
+    self.navigationItem.rightBarButtonItem =
+    [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Done", nil)
+                                     style:UIBarButtonItemStyleDone
+                                    target:self.picker
+                                    action:@selector(finishPickingAssets:)];
+    */
     
     self.navigationItem.rightBarButtonItem =
-/*    [[UIBarButtonItem alloc] initWithTitle:CTAssetsPickerControllerLocalizedString(@"Done")
-                                     style:UIBarButtonItemStyleDone
-                                    target:self.picker
-                                    action:@selector(finishPickingAssets:)];
- */
-    [[UIBarButtonItem alloc] initWithTitle:CTAssetsPickerControllerLocalizedString(@"下一步")
+    [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"确定", nil)
                                      style:UIBarButtonItemStyleDone
                                     target:self.picker
                                     action:@selector(finishPickingAssets:)];
     
-    if (self.picker.alwaysEnableDoneButton)
-        self.navigationItem.rightBarButtonItem.enabled = YES;
-    else
-        self.navigationItem.rightBarButtonItem.enabled = (self.picker.selectedAssets.count > 0);
+    self.navigationItem.rightBarButtonItem.enabled = (self.picker.selectedAssets.count > 0);
 }
 
 - (void)setupToolbar
@@ -160,8 +158,8 @@
 - (void)localize
 {
     if (!self.picker.title)
-//        self.title = CTAssetsPickerControllerLocalizedString(@"Photos");
-        self.title = CTAssetsPickerControllerLocalizedString(@"相册");
+//        self.title = NSLocalizedString(@"Photos", nil);
+        self.title = NSLocalizedString(@"相册", nil);
     else
         self.title = self.picker.title;
 }
@@ -304,10 +302,7 @@
         if (index != NSNotFound)
         {
             NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
-
-            /* Re-apply the filter if the group changed */
-            [group setAssetsFilter:self.picker.assetsFilter];
-
+            
             [self.groups replaceObjectAtIndex:index withObject:group];
             [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
         }
@@ -323,9 +318,6 @@
         NSIndexPath *indexPath = [NSIndexPath indexPathForRow:self.groups.count inSection:0];
         
         [self.tableView beginUpdates];
-        
-        /* Re-apply the filter for inserted group */
-        [group setAssetsFilter:self.picker.assetsFilter];
         
         [self.groups addObject:group];
         [self.tableView insertRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];

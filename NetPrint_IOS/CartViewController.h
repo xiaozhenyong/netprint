@@ -16,12 +16,16 @@
 #import "CartTableViewCell.h"
 #import "LoginViewController.h"
 #import "DistributionMsgViewController.h"
+#import "ViewController.h"
+#import "UserIndexViewController.h"
 
 @interface CartViewController : UIViewController<UITableViewDelegate,UITableViewDataSource>
 @property (strong, nonatomic) IBOutlet UITableView *cartShow;
 @property (strong, nonatomic) IBOutlet UILabel *totalPriceLabel;
 - (IBAction)backPage:(id)sender;
 - (IBAction)settleButton:(id)sender;
+- (IBAction)toViewController:(id)sender;
+- (IBAction)toUserIndexViewController:(id)sender;
 
 @property (strong,nonatomic)AppDelegate *appDelegate;
 

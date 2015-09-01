@@ -158,7 +158,6 @@
     }
     
     if (deletSuccess) {
-        NSLog(@"-----cart deletsuccess-----");
         for (Cart *cart in self.cartArray) {
             if ([_butTag isEqualToString:cart.cartId]) {
                 [self.cartArray removeObject:cart];
@@ -216,9 +215,7 @@
         
         CFStringRef ref=CFURLCreateStringByAddingPercentEscapes(NULL, (CFStringRef)jsonString, NULL,(CFStringRef)@"!*’();:@&=+$,/?%#[]", kCFStringEncodingUTF8);
         NSString *_jsonString = [NSString stringWithString:(__bridge  NSString *)ref];
-        
-         NSLog(@"jsonstring------>%@",_jsonString);
-        
+       
         CFRelease(ref);
         
         NSError *requestError;
@@ -252,5 +249,11 @@
         }
       
     }
+}
+
+- (IBAction)toViewController:(id)sender {
+}
+
+- (IBAction)toUserIndexViewController:(id)sender {
 }
 @end

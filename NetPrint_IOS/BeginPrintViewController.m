@@ -12,7 +12,10 @@
 #import "PhotoShowViewController.h"
 
 
-@interface BeginPrintViewController ()<CTAssetsPickerControllerDelegate>
+@interface BeginPrintViewController ()<CTAssetsPickerControllerDelegate>{
+
+    NSArray *photoSizePickerData,*photoTexturePickerData;
+}
 
 @end
 
@@ -28,8 +31,13 @@
     
     _appDelegate = (AppDelegate *)[[UIApplication sharedApplication]delegate];
     
-    [self initGoodsSelect];
 //    [self startRequest];
+
+    [self initTextField];
+    [self initPhotoSizePickerView];
+    [self initPhotoTexturePickerView];
+    [self initPickerViewData];
+    
 }
 
 - (void)didReceiveMemoryWarning {
@@ -41,118 +49,91 @@
     [super viewWillAppear:animated];
 }
 
-- (void)initGoodsSelect{
-    [self.open addTarget:self action:@selector(switchChange:) forControlEvents:UIControlEventValueChanged];
-    
-    CGFloat psx = self.photoSize.bounds.origin.x;
-    CGFloat psy = self.photoSize.bounds.origin.y;
-    NSInteger psTag = self.photoSize.tag;
-    
-    self.psArray = [self queryForPhotoProperty:_bFlag tableName:PHOTO_SIZE];
-    self.psCount = [self.psArray count];
-    
-    if (self.psArray) {
-        [self photoSizeAddSubview:psx originY:psy psTag:psTag psArray:self.psArray];
+- (void) initPhotoSizePickerView{
+    self.photoSizePicker.delegate = self;
+    self.photoSizePicker.dataSource = self;
+}
+
+- (void) initPhotoTexturePickerView{
+    self.photoTexturePicker.delegate = self;
+    self.photoTexturePicker.dataSource = self;
+}
+
+- (void) initTextField{
+    self.photoTextureText.delegate = self;
+    self.photoSizeText.delegate = self;
+}
+
+- (void) initPickerViewData{
+    photoSizePickerData = [self queryForPhotoProperty:_bFlag tableName:PHOTO_SIZE];
+    photoTexturePickerData = [self queryForPhotoProperty:_bFlag tableName:PHOTO_TEXTURE];
+}
+
+
+#pragma mark - Picker Datasource Protocol
+//列数
+- (NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView{
+    if (pickerView == self.photoSizePicker) {
+        return 1;
     }else{
-        NSLog(@"PhotoSize is null ");
+        return 1;
     }
-    
-    CGFloat ptx = self.photoTexture.bounds.origin.x;
-    CGFloat pty = self.photoTexture.bounds.origin.y;
-    NSInteger ptTag = self.photoTexture.tag;
-    
-    self.ptArray = [self queryForPhotoProperty:_bFlag tableName:PHOTO_TEXTURE];
-    self.ptCount = [self.ptArray count];
-    
-    if (self.ptCount != 0) {
-        [self photoTextureAddSubview:ptx originY:pty psTag:ptTag psArray:self.ptArray];
+}
+//行数
+- (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component{
+    if (pickerView == self.photoSizePicker) {
+        return [photoSizePickerData count];
     }else{
-        NSLog(@"PhotoTexture is null ");
-    }
-
-}
-
-- (void) photoSizeAddSubview:(CGFloat)psx originY:(CGFloat)psy psTag:(NSInteger) tag psArray:(NSMutableArray *)mArray{
-    UIButton *but = nil;
-
-    NSInteger i = 0;
-    for (PhotoSize *ps in mArray) {
-        i = [ps.photosizeid integerValue];
-        but = [self createPSRadioButton:psx originY:psy sizeWidth:20 sizeHeight:20 index:i buttonTitle:ps.name];
-        [self.photoSize addSubview:but];
-        psx +=50;
+        return [photoTexturePickerData count];
     }
 }
 
-- (UIButton *) createPSRadioButton:(CGFloat)x originY:(CGFloat)y sizeWidth:(CGFloat)w sizeHeight:(CGFloat)h index:(NSInteger)index buttonTitle:(NSString *)title{
-    
-    UIButton *radioBut = [UIButton buttonWithType:UIButtonTypeCustom];
-    CGRect rect = CGRectMake(x, y, w,h);
-    [radioBut setFrame:rect];
-    [radioBut setTag:index];
-    [radioBut setTitle:title forState:UIControlStateNormal];
-    
-    [radioBut setImage:[UIImage imageNamed:@"rbnoselect.png"] forState:UIControlStateNormal];
-    
-    [radioBut addTarget:self action:@selector(psRadioButtonSelect:) forControlEvents:UIControlEventTouchUpInside];
-    
-    return  radioBut;
-}
-- (void)psRadioButtonSelect:(id)sender{
-    NSInteger i = 0;
-    UIButton *deselectBut = nil;
-    for (PhotoSize *ps in self.psArray) {
-        i = [ps.photosizeid integerValue];
-        deselectBut = (UIButton *)[self.photoSize viewWithTag:i];
-        [deselectBut setImage:[UIImage imageNamed:@"rbnoselect.png"] forState:UIControlStateNormal];
-    }
-    
-    UIButton *but = (UIButton *)sender;
-    self.photoSizeId.text = [NSString stringWithFormat:@"%ld",but.tag];
-    [but setImage:[UIImage imageNamed:@"rbselected.png"] forState:UIControlStateNormal];
-}
+#pragma mark - Picker Delegate Protocol
 
-
-- (void) photoTextureAddSubview:(CGFloat)psx originY:(CGFloat)psy psTag:(NSInteger) tag psArray:(NSMutableArray *)mArray{
-    UIButton *but = nil;
-    NSInteger idIndex = 0;
-    for (PhotoTexture *pt in mArray) {
-        idIndex = [pt.phototextureid integerValue];
-        but = [self createPTRadioButton:psx originY:psy sizeWidth:20 sizeHeight:20 index:idIndex buttonTitle:pt.name];
-        [self.photoTexture addSubview:but];
-        psx +=50;
+- (NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component{
+    if (pickerView == self.photoSizePicker) {
+        PhotoSize *photoSize = [photoSizePickerData objectAtIndex:row];
+        if (row == 0) {
+            self.photoSizeId.text = photoSize.photosizeid;
+            self.photoSizeText.text = photoSize.name;
+        }
+        return photoSize.name;
+    }else{
+        PhotoTexture *photoTexture = [photoTexturePickerData objectAtIndex:row];
+        if (row == 0) {
+            self.photoTexttureId.text = photoTexture.phototextureid;
+            self.photoTextureText.text = photoTexture.name;
+        }
+        return photoTexture.name;
     }
 }
 
-- (UIButton *) createPTRadioButton:(CGFloat)x originY:(CGFloat)y sizeWidth:(CGFloat)w sizeHeight:(CGFloat)h index:(NSInteger)index buttonTitle:(NSString *)title{
-    
-    UIButton *radioBut = [UIButton buttonWithType:UIButtonTypeCustom];
-    CGRect rect = CGRectMake(x, y, w,h);
-    [radioBut setFrame:rect];
-    [radioBut setTag:index];
-    [radioBut setTitle:title forState:UIControlStateNormal];
-    [radioBut setImage:[UIImage imageNamed:@"rbnoselect.png"] forState:UIControlStateNormal];
-    
-    [radioBut addTarget:self action:@selector(ptRadioButtonSelect:) forControlEvents:UIControlEventTouchUpInside];
-    
-    return  radioBut;
-}
-- (void)ptRadioButtonSelect:(id)sender{
- 
-    NSInteger i = 0;
-    UIButton *deselectBut = nil;
-    for (PhotoTexture *pt in self.ptArray) {
-        i = [pt.phototextureid integerValue];
-        deselectBut = (UIButton *)[self.photoTexture viewWithTag:i];
-        [deselectBut setImage:[UIImage imageNamed:@"rbnoselect.png"] forState:UIControlStateNormal];
+- (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component{
+    if (pickerView == self.photoSizePicker) {
+        PhotoSize *photoSize = [photoSizePickerData objectAtIndex:row];
+        self.photoSizeId.text = photoSize.photosizeid;
+        self.photoSizeText.text = photoSize.name;
+    }else{
+        PhotoTexture *photoTexture = [photoTexturePickerData objectAtIndex:row];
+        self.photoTextureText.text = photoTexture.name;
+        self.photoTexttureId.text = photoTexture.phototextureid;
     }
-    
-    UIButton *but = (UIButton *)sender;
-    self.photoTexttureId.text = [NSString stringWithFormat:@"%ld",but.tag];
-    
-    [but setImage:[UIImage imageNamed:@"rbselected.png"] forState:UIControlStateNormal];
 }
 
+
+#pragma  mark - UITextField Delegate Procotol
+
+- (BOOL)textFieldShouldBeginEditing:(UITextField *)textField{
+    
+    if ([textField isEqual:(UITextField *)self.photoSizeText]) {
+        self.photoTexturePicker.hidden = YES;
+        self.photoSizePicker.hidden = NO;
+    }else{
+        self.photoSizePicker.hidden = YES;
+        self.photoTexturePicker.hidden = NO;
+    }
+    return NO;
+}
 
 /*
 #pragma mark - Navigation
@@ -196,6 +177,7 @@
     photoShow.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
     photoShow.swv = self.switchValueLable.text;
     photoShow.dataArray = _assets;
+    photoShow.flag = _bFlag;
 
     if ([@"0" isEqualToString:self.switchValueLable.text]) {
         photoShow.goodsArray = [self queryForGoodsPhotoSizeId:psId photoTextureId:ptId photoWrap:WRAP_P];
@@ -213,12 +195,11 @@
                          otherButtonTitles:@"OK", nil];
         
         [alertView show];
-    }
+    }else{
     
-    [self presentViewController:photoShow animated:YES completion:nil];
-
-
+        [self presentViewController:photoShow animated:YES completion:nil];
     }
+}
 
 - (IBAction)selectPhoto:(id)sender {
 //    if (!_assets) {
@@ -360,7 +341,7 @@
         =1 证件照
         =2 拍立得
  */
-- (NSMutableArray *)queryForPhotoProperty:(NSString *)flag tableName:(NSString *)tableName{
+- (NSArray *)queryForPhotoProperty:(NSString *)flag tableName:(NSString *)tableName{
     NSError *error = nil;
     
     NSFetchRequest *request = [[NSFetchRequest alloc]init];
@@ -372,7 +353,7 @@
         [request setPredicate:predicate];
     }
     
-    NSMutableArray *array = [[_appDelegate.managedObjectContext executeFetchRequest:request error:&error]mutableCopy];
+    NSArray *array = [[_appDelegate.managedObjectContext executeFetchRequest:request error:&error]mutableCopy];
     if (array) {
         return array;
     }else{

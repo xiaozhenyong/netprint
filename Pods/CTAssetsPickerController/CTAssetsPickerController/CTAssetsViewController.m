@@ -25,14 +25,13 @@
  
  */
 
-#import "CTAssetsPickerCommon.h"
+#import "CTAssetsPickerConstants.h"
 #import "CTAssetsPickerController.h"
 #import "CTAssetsViewController.h"
 #import "CTAssetsViewCell.h"
 #import "CTAssetsSupplementaryView.h"
 #import "CTAssetsPageViewController.h"
 #import "CTAssetsViewControllerTransition.h"
-#import "NSBundle+CTAssetsPickerController.h"
 
 
 
@@ -70,8 +69,7 @@ NSString * const CTAssetsSupplementaryViewIdentifier = @"CTAssetsSupplementaryVi
 
 - (id)init
 {
-    UIInterfaceOrientation interfaceOrientation = [[UIApplication sharedApplication] statusBarOrientation];
-    UICollectionViewFlowLayout *layout = [self collectionViewFlowLayoutOfOrientation:interfaceOrientation];
+    UICollectionViewFlowLayout *layout = [self collectionViewFlowLayoutOfOrientation:self.interfaceOrientation];
     
     if (self = [super initWithCollectionViewLayout:layout])
     {
@@ -84,7 +82,7 @@ NSString * const CTAssetsSupplementaryViewIdentifier = @"CTAssetsSupplementaryVi
                 forSupplementaryViewOfKind:UICollectionElementKindSectionFooter
                        withReuseIdentifier:CTAssetsSupplementaryViewIdentifier];
         
-        self.preferredContentSize = CTAssetPickerPopoverContentSize;
+        self.preferredContentSize = kPopoverContentSize;
     }
     
     [self addNotificationObserver];
@@ -139,22 +137,19 @@ NSString * const CTAssetsSupplementaryViewIdentifier = @"CTAssetsSupplementaryVi
 
 - (void)setupButtons
 {
-/*    self.navigationItem.rightBarButtonItem =
-    [[UIBarButtonItem alloc] initWithTitle:CTAssetsPickerControllerLocalizedString(@"Done")
-                                     style:UIBarButtonItemStyleDone
-                                    target:self.picker
-                                    action:@selector(finishPickingAssets:)];
-  */
+    /*
     self.navigationItem.rightBarButtonItem =
-    [[UIBarButtonItem alloc] initWithTitle:CTAssetsPickerControllerLocalizedString(@"下一步")
+    [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Done", nil)
                                      style:UIBarButtonItemStyleDone
                                     target:self.picker
                                     action:@selector(finishPickingAssets:)];
-
-    if (self.picker.alwaysEnableDoneButton)
-        self.navigationItem.rightBarButtonItem.enabled = YES;
-    else
-        self.navigationItem.rightBarButtonItem.enabled = (self.picker.selectedAssets.count > 0);
+    */
+    self.navigationItem.rightBarButtonItem =
+    [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"选择", nil)
+                                     style:UIBarButtonItemStyleDone
+                                    target:self.picker
+                                    action:@selector(finishPickingAssets:)];
+    self.navigationItem.rightBarButtonItem.enabled = (self.picker.selectedAssets.count > 0);
 }
 
 - (void)setupToolbar
@@ -200,21 +195,20 @@ NSString * const CTAssetsSupplementaryViewIdentifier = @"CTAssetsSupplementaryVi
 - (UICollectionViewFlowLayout *)collectionViewFlowLayoutOfOrientation:(UIInterfaceOrientation)orientation
 {
     UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
-    
-    layout.itemSize             = CTAssetThumbnailSize;
+    layout.itemSize             = kThumbnailSize;
     layout.footerReferenceSize  = CGSizeMake(0, 47.0);
     
     if (UIInterfaceOrientationIsLandscape(orientation) && (UI_USER_INTERFACE_IDIOM() != UIUserInterfaceIdiomPad))
     {
         layout.sectionInset            = UIEdgeInsetsMake(9.0, 2.0, 0, 2.0);
-        layout.minimumInteritemSpacing = (CTIPhone6Plus) ? 1.0 : ( (CTIPhone6) ? 2.0 : 3.0 );
-        layout.minimumLineSpacing      = (CTIPhone6Plus) ? 1.0 : ( (CTIPhone6) ? 2.0 : 3.0 );
+        layout.minimumInteritemSpacing = 3.0;
+        layout.minimumLineSpacing      = 3.0;
     }
     else
     {
         layout.sectionInset            = UIEdgeInsetsMake(9.0, 0, 0, 0);
-        layout.minimumInteritemSpacing = (CTIPhone6Plus) ? 0.5 : ( (CTIPhone6) ? 1.0 : 2.0 );
-        layout.minimumLineSpacing      = (CTIPhone6Plus) ? 0.5 : ( (CTIPhone6) ? 1.0 : 2.0 );
+        layout.minimumInteritemSpacing = 2.0;
+        layout.minimumLineSpacing      = 2.0;
     }
     
     return layout;
@@ -285,9 +279,6 @@ NSString * const CTAssetsSupplementaryViewIdentifier = @"CTAssetsSupplementaryVi
     [[self.toolbarItems objectAtIndex:1] setTitle:[self.picker toolbarTitle]];
     
     [self.navigationController setToolbarHidden:(selectedAssets.count == 0) animated:YES];
-    
-    // Reload assets for calling de/selectAsset method programmatically
-    [self.collectionView reloadData];
 }
 
 
@@ -338,9 +329,7 @@ NSString * const CTAssetsSupplementaryViewIdentifier = @"CTAssetsSupplementaryVi
     if (self.assets.count > 0)
     {
         [self.collectionView reloadData];
-        
-        if (self.collectionView.contentOffset.y <= 0)
-            [self.collectionView setContentOffset:CGPointMake(0, self.collectionViewLayout.collectionViewContentSize.height)];
+        [self.collectionView setContentOffset:CGPointMake(0, self.collectionViewLayout.collectionViewContentSize.height)];
     }
     else
     {

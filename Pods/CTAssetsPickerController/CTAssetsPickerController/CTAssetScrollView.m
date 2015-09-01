@@ -29,8 +29,7 @@
 #import "CTAssetScrollView.h"
 #import "ALAsset+assetType.h"
 #import "ALAsset+accessibilityLabel.h"
-#import "NSBundle+CTAssetsPickerController.h"
-#import "UIImage+CTAssetsPickerController.h"
+
 
 
 
@@ -190,7 +189,7 @@ NSString * const CTAssetScrollViewTappedNotification = @"CTAssetScrollViewTapped
         }
         else
         {
-            image = [UIImage ctassetsPickerControllerImageNamed:@"CTAssetsPickerEmptyAsset"];
+            image = [UIImage imageNamed:@"CTAssetsPickerEmptyAsset"];
         }
         
         // clear the previous image
@@ -392,13 +391,13 @@ NSString * const CTAssetScrollViewTappedNotification = @"CTAssetScrollViewTapped
 
 - (void)addVideoPlayButton
 {
-    UIImage *image   = [UIImage ctassetsPickerControllerImageNamed:@"CTAssetsPickerPlay"];
+    UIImage *image   = [UIImage imageNamed:@"CTAssetsPickerPlay"];
     UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
     
     [button setImage:image forState:UIControlStateNormal];
     [button addTarget:self action:@selector(playVideo:) forControlEvents:UIControlEventTouchUpInside];
     
-    button.accessibilityLabel = CTAssetsPickerControllerLocalizedString(@"Play");
+    button.accessibilityLabel = NSLocalizedString(@"Play" , nil);
     button.translatesAutoresizingMaskIntoConstraints = NO;
     
     self.playButton = button;

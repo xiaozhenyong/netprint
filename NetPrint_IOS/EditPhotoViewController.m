@@ -14,8 +14,9 @@
     float imageViewX,imageViewY;
     CGSize originalImageViewSize;
     CGFloat imageRate, viewRate;
-    __block ALAsset *newAsset;
     int editFlag;//0=剪切,1=留白,2=原图
+    int mpw,mph;//最小像素宽，最小像素高
+    UIImage *newImage;
 }
 
 @end
@@ -39,8 +40,6 @@
     [movePan setMaximumNumberOfTouches:1];
     [self.assetImageView addGestureRecognizer:movePan];
     
-    UISwipeGestureRecognizer *moveSwipe = [[UISwipeGestureRecognizer alloc]initWithTarget:self action:@selector(moveImage:)];
-    [self.assetImageView addGestureRecognizer:moveSwipe];  
 }
 
 - (void)viewDidAppear:(BOOL)animated{
@@ -66,6 +65,7 @@
     NSUInteger buffered = [rep getBytes:buffer fromOffset:0 length:[rep size] error:nil];
     NSData *data = [NSData dataWithBytesNoCopy:buffer length:buffered];
     image = [UIImage imageWithData:data];
+   
 }
 
 - (NSData *)getALAssetRepresentationWithALAsset:(ALAsset *)alasset{
@@ -79,64 +79,62 @@
     self.editPhoto.layer.borderWidth = 0.5;
     self.editPhoto.layer.borderColor = [UIColor redColor].CGColor;
     
-//    int mpw = [self.ps.mixpixelwidth intValue];
-//    int mph = [self.ps.minpixelheight intValue];
-    int mpw = 1395;
-    int mph = 1800;
+    mpw = [self.ps.mixpixelwidth intValue];
+    mph = [self.ps.minpixelheight intValue];
+//    mpw = 1395;
+//    mph = 1800;
     
     CGFloat w = 0.0;
     CGFloat h = 0.0;
     CGFloat imageW = image.size.width;
     CGFloat imageH = image.size.height;
- 
+    
     if (imageW > imageH) {
-        w = self.editPhoto.layer.frame.size.width;
-        if (mpw > mph) {
+        w = self.editPhoto.frame.size.width;
+        if (mpw >= mph) {
             h = w * mph/mpw;
         }else{
             h = w * mpw/mph;
         }
     }else{
-        h = self.editPhoto.layer.frame.size.height;
+        h = self.editPhoto.frame.size.height;
         if (mph >= mpw) {
             w = h * mpw/mph;
         }else{
             w = h * mph/mpw;
         }
     }
-
-    CGRect editPhotoFrame = self.editPhoto.layer.frame;
-    editPhotoFrame.size.width = w;
-    editPhotoFrame.size.height = h;
-    self.editPhoto.layer.frame = editPhotoFrame;
+    
+    CGRect editPhotoFrame = self.editPhoto.frame;
+    editPhotoFrame.size=CGSizeMake(w, h);
+    self.editPhoto.frame = editPhotoFrame;
     self.editPhoto.center = CGPointMake(self.editPhotoField.frame.size.width/2, self.editPhotoField.frame.size.height/2);
 }
 
 - (void)setImageViewWithPhotoSize{
     imageRate = image.size.width/image.size.height;
-    viewRate = self.editPhoto.layer.frame.size.width/self.editPhoto.layer.frame.size.height;
+    viewRate = self.editPhoto.frame.size.width/self.editPhoto.frame.size.height;
     
     CGFloat imageViewW = 0.0;
     CGFloat imageViewH = 0.0;
     if (imageRate > viewRate) {
-        imageViewH = self.editPhoto.layer.frame.size.height;
+        imageViewH = self.editPhoto.frame.size.height;
         imageViewW = imageViewH * image.size.width/image.size.height;
         
         float _imageScale = self.editPhoto.frame.size.height/image.size.height;
         originalImageViewSize = CGSizeMake(image.size.width*_imageScale, image.size.height*_imageScale);
         
     }else{
-        imageViewW = self.editPhoto.layer.frame.size.width;
+        imageViewW = self.editPhoto.frame.size.width;
         imageViewH = imageViewW * image.size.height/image.size.width;
         
         float _imageScale = self.editPhoto.frame.size.width/image.size.width;
         originalImageViewSize = CGSizeMake(image.size.width*_imageScale, image.size.height*_imageScale);
     }
     
-    CGRect rect = self.assetImageView.layer.frame;
-    rect.size.width = imageViewW;
-    rect.size.height = imageViewH;
-    self.assetImageView.layer.frame = rect;
+    CGRect rect = self.assetImageView.frame;
+    rect.size = CGSizeMake(imageViewW, imageViewH);
+    self.assetImageView.frame = rect;
     
     self.assetImageView.image = image;
     self.assetImageView.center = CGPointMake(self.editPhoto.frame.size.width/2, self.editPhoto.frame.size.height/2);
@@ -229,18 +227,27 @@
 
 - (IBAction)editFinish:(id)sender {
     
-    NSDictionary *dataDic;
-    if (editFlag == 0) {//剪切
-        dataDic = [[NSDictionary alloc] initWithObjectsAndKeys:self.photoNum.text,@"photoNum",self.arrayIndex,@"index",newAsset,@"newAsset",editFlag,@"editFlat", nil];
-    }else if (editFlag == 1){//缩放
+    ALAssetsLibrary *library = [[ALAssetsLibrary alloc]init];
     
-    }else{//原图
-       dataDic = [[NSDictionary alloc] initWithObjectsAndKeys:self.photoNum.text,@"photoNum",self.arrayIndex,@"index",nil,@"newAsset",editFlag,@"editFlag", nil];
-    }
-    
-    [self dismissViewControllerAnimated:YES completion:^{
-        [[NSNotificationCenter defaultCenter]postNotificationName:@"editPhotoData" object:nil userInfo:dataDic];
+    [library writeImageToSavedPhotosAlbum:[newImage CGImage] orientation:(ALAssetOrientation)[newImage imageOrientation] completionBlock:^(NSURL *assetURL, NSError *error) {
+          
+            NSDictionary *dataDic;
+            NSString *index = [NSString stringWithFormat:@"%ld",self.arrayIndex];
+            NSString *ef = [NSString stringWithFormat:@"%d",editFlag];
+           
+            if (editFlag == 0 || editFlag == 1) {//剪切
+
+                dataDic = [[NSDictionary alloc] initWithObjectsAndKeys:self.photoNum.text,@"photoNum",index,@"index",assetURL,@"newAsset",ef,@"editFlat", nil];
+
+            }else{//原图
+                dataDic = [[NSDictionary alloc] initWithObjectsAndKeys:self.photoNum.text,@"photoNum",index,@"index",nil,@"newAsset",ef,@"editFlag", nil];
+            }
+            
+            [self dismissViewControllerAnimated:YES completion:^{
+                [[NSNotificationCenter defaultCenter]postNotificationName:@"editPhotoData" object:nil userInfo:dataDic];
+            }];
     }];
+
 }
 
 - (IBAction)subPhotoNumBut:(id)sender {
@@ -282,13 +289,12 @@
 
     CGImageRef tmp = CGImageCreateWithImageInRect([rotInputImage CGImage], CropRectinImage);
 
-    UIImage *newImage= [UIImage imageWithCGImage:tmp scale:image.scale orientation:image.imageOrientation];
-    /*
+    newImage= [UIImage imageWithCGImage:tmp scale:image.scale orientation:image.imageOrientation];
+    
     self.assetImageView.frame = CGRectMake(0, 0, self.editPhoto.frame.size.width, self.editPhoto.frame.size.height);
     self.assetImageView.image = newImage;
-     */
+     
     editFlag = 0;
-    [self saveNewImage:newImage];
     
 }
 
@@ -298,6 +304,8 @@
     
     float editViewRate = self.editPhoto.frame.size.width/self.editPhoto.frame.size.height;
     float nimageRate = image.size.width/image.size.height;
+    float scale = 0.0;
+    
     
     CGFloat imageViewW = 0.0;
     CGFloat imageViewH = 0.0;
@@ -305,25 +313,40 @@
     if (nimageRate > editViewRate) {
         imageViewW = self.editPhoto.layer.frame.size.width;
         imageViewH = imageViewW * image.size.height/image.size.width;
+        scale =image.size.width/self.editPhoto.frame.size.width;
     }else{
         imageViewH = self.editPhoto.layer.frame.size.height;
         imageViewW = imageViewH * image.size.width/image.size.height;
+        scale = image.size.height/self.editPhoto.frame.size.height;
     }
     
+    
     CGRect rect = self.assetImageView.layer.frame;
-    rect.size.width = imageViewW;
-    rect.size.height = imageViewH;
+    rect.size.width = self.editPhoto.frame.size.width;
+    rect.size.height = self.editPhoto.frame.size.height;
     self.assetImageView.layer.frame = rect;
     
-    /*
-    self.assetImageView.image = image;
+  
+    CGSize blankImageSize = CGSizeMake(self.editPhoto.frame.size.width*scale, self.editPhoto.frame.size.height*scale);
+    
+    UIGraphicsBeginImageContextWithOptions(blankImageSize, YES, [UIScreen mainScreen].scale);
+    [[UIColor whiteColor] set];
+    UIRectFill(CGRectMake(0, 0, blankImageSize.width, blankImageSize.height));
+    UIImage *blankImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    UIGraphicsBeginImageContext(blankImageSize);
+    [blankImage drawInRect:CGRectMake(0, 0, blankImageSize.width, blankImageSize.height)];
+    
+    [image drawInRect:CGRectMake((blankImage.size.width-image.size.width)/2,(blankImage.size.height-image.size.height)/2 , image.size.width, image.size.height)];
+    
+    UIImage *resultImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+
+    self.assetImageView.image = resultImage;
+    
     self.assetImageView.center = CGPointMake(self.editPhoto.frame.size.width/2, self.editPhoto.frame.size.height/2);
-    */
-    CGSize blankImageSize = CGSizeMake(self.editPhoto.frame.size.width, self.editPhoto.frame.size.height);
-    
-    UIGraphicsBeginImageContextWithOptions(blankImageSize, YES, [UIScreen mainScreen]scale);
-    [UIColor blackColor]
-    
+    newImage = resultImage;
     
     editFlag = 1;
 }
@@ -334,22 +357,9 @@
 }
 
 - (void)originalImage{
+    newImage = image;
     [self setImageViewWithPhotoSize];
     self.assetImageView.transform = CGAffineTransformIdentity;
 }
-
-
-- (void)saveNewImage:(UIImage *)newImage{
-    ALAssetsLibrary *library = [[ALAssetsLibrary alloc]init];
-    [library writeImageToSavedPhotosAlbum:[newImage CGImage] orientation:(ALAssetOrientation)[newImage imageOrientation] completionBlock:^(NSURL *assetURL, NSError *error) {
-               [library assetForURL:assetURL resultBlock:^(ALAsset *asset) {
-            newAsset = asset;
-        } failureBlock:^(NSError *error) {
-            NSLog(@"LibraryError---->%@",error);
-        }];
-    }];
-    
-}
-
 
 @end

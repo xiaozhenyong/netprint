@@ -15,6 +15,8 @@
 #import "PhotoSize.h"
 #import "SelPhotoShowCollectionViewCell.h"
 #import "EditPhotoViewController.h"
+#import "EditPldViewController.h"
+#import "PldInCollectionView.h"
 
 
 
@@ -39,11 +41,12 @@
 - (IBAction)backPage:(id)sender;
 - (IBAction)nextPage:(id)sender;
 
-@property (strong,nonatomic)AppDelegate *appDelegate;
+@property (strong, nonatomic) AppDelegate *appDelegate;
 
-@property (strong,nonatomic)NSString *swv;
-@property (strong,nonatomic)NSMutableArray *dataArray;
-@property (strong,nonatomic)NSMutableArray *goodsArray;
+@property (strong, nonatomic) NSString *swv;
+@property (strong, nonatomic) NSMutableArray *dataArray;
+@property (strong, nonatomic) NSMutableArray *goodsArray;
+@property (strong, nonatomic) NSString *flag;
 
-@property (strong,nonatomic)ALAsset *asset;
+@property (strong, nonatomic) ALAsset *asset;
 @end

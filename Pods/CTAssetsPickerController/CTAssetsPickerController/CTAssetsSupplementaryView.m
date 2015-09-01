@@ -26,7 +26,6 @@
  */
 
 #import "CTAssetsSupplementaryView.h"
-#import "NSBundle+CTAssetsPickerController.h"
 
 
 
@@ -55,14 +54,6 @@
                                                          attribute:NSLayoutAttributeCenterX
                                                         multiplier:1.0f
                                                           constant:0.0f]];
-        
-        [self addConstraint:[NSLayoutConstraint constraintWithItem:_label
-                                                         attribute:NSLayoutAttributeCenterY
-                                                         relatedBy:NSLayoutRelationEqual
-                                                            toItem:self
-                                                         attribute:NSLayoutAttributeCenterY
-                                                        multiplier:1.0f
-                                                          constant:0.0f]];
     }
     
     return self;
@@ -84,11 +75,11 @@
     NSInteger numberOfPhotos = [assets filteredArrayUsingPredicate:[self predicateOfAssetType:ALAssetTypePhoto]].count;
     
     if (numberOfVideos == 0)
-        self.label.text = [NSString stringWithFormat:CTAssetsPickerControllerLocalizedString(@"%ld Photos"), (long)numberOfPhotos];
+        self.label.text = [NSString stringWithFormat:NSLocalizedString(@"%ld Photos", nil), (long)numberOfPhotos];
     else if (numberOfPhotos == 0)
-        self.label.text = [NSString stringWithFormat:CTAssetsPickerControllerLocalizedString(@"%ld Videos"), (long)numberOfVideos];
+        self.label.text = [NSString stringWithFormat:NSLocalizedString(@"%ld Videos", nil), (long)numberOfVideos];
     else
-        self.label.text = [NSString stringWithFormat:CTAssetsPickerControllerLocalizedString(@"%ld Photos, %ld Videos"), (long)numberOfPhotos, (long)numberOfVideos];
+        self.label.text = [NSString stringWithFormat:NSLocalizedString(@"%ld Photos, %ld Videos", nil), (long)numberOfPhotos, (long)numberOfVideos];
 }
 
 - (NSPredicate *)predicateOfAssetType:(NSString *)type

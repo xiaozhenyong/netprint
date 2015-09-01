@@ -12,13 +12,20 @@
 #import "Cart.h"
 #import "DefineData.h"
 #import "PayOrderViewController.h"
+#import "AFNetworking.h"
+#import "ViewController.h"
+#import "CartViewController.h"
+#import "UserIndexViewController.h"
 
 @interface DistributionMsgViewController : UIViewController<UIPickerViewDataSource,UIPickerViewDelegate,UITextFieldDelegate,NSURLConnectionDataDelegate >
 @property (strong, nonatomic) IBOutlet UILabel *addressLabel;
 @property (strong, nonatomic) IBOutlet UILabel *deliveryManLabel;
 @property (strong, nonatomic) IBOutlet UILabel *phoneLabel;
-@property (strong, nonatomic) IBOutlet UITextField *distributionMethodLabel;
-@property (strong, nonatomic) IBOutlet UITextField *couponLabel;
+
+@property (strong, nonatomic) IBOutlet UITextField *distributionMethodTextField;
+
+@property (strong, nonatomic) IBOutlet UITextField *couponTextField;
+
 @property (strong, nonatomic) IBOutlet UILabel *goodsPriceLabel;
 @property (strong, nonatomic) IBOutlet UILabel *freightLabel;
 @property (strong, nonatomic) IBOutlet UILabel *couponPriceLabel;
@@ -29,6 +36,11 @@
 - (IBAction)useCouponButton:(id)sender;
 - (IBAction)submitOrderButton:(id)sender;
 - (IBAction)back:(id)sender;
+
+
+- (IBAction)toViewController:(id)sender;
+- (IBAction)toCartViewController:(id)sender;
+- (IBAction)toUserIndexViewController:(id)sender;
 
 @property (strong,nonatomic) NSDictionary *mdi;
 @property (strong,nonatomic) NSMutableArray *cartArray;

@@ -25,13 +25,12 @@
  
  */
 
-#import "CTAssetsPickerCommon.h"
+#import "CTAssetsPickerConstants.h"
 #import "CTAssetsPickerController.h"
 #import "CTAssetsGroupViewController.h"
 #import "CTAssetsPageViewController.h"
 #import "CTAssetsViewControllerTransition.h"
-#import "NSBundle+CTAssetsPickerController.h"
-#import "UIImage+CTAssetsPickerController.h"
+
 
 
 
@@ -51,12 +50,10 @@ NSString * const CTAssetsPickerSelectedAssetsChangedNotification = @"CTAssetsPic
         _selectedAssets         = [[NSMutableArray alloc] init];
         _showsCancelButton      = YES;
         _showsNumberOfAssets    = YES;
-        _alwaysEnableDoneButton = NO;
         
-        self.preferredContentSize = CTAssetPickerPopoverContentSize;
+        self.preferredContentSize = kPopoverContentSize;
         
         [self setupNavigationController];
-        [self setupToolbarApperance];
         [self addKeyValueObserver];
     }
     
@@ -75,30 +72,20 @@ NSString * const CTAssetsPickerSelectedAssetsChangedNotification = @"CTAssetsPic
 - (void)setupNavigationController
 {
     CTAssetsGroupViewController *vc = [[CTAssetsGroupViewController alloc] init];
-    UINavigationController *nav = [[self createChildNavigationController] initWithRootViewController:vc];
-    
-    // Enable iOS 7 back gesture
-    nav.interactivePopGestureRecognizer.enabled  = YES;
-    nav.interactivePopGestureRecognizer.delegate = nil;
-    
+    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:vc];
     nav.delegate = self;
-    [nav willMoveToParentViewController:self];
     
-    // Set frame origin to zero so that the view will be positioned correctly while in-call status bar is shown
-    [nav.view setFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
+    [nav willMoveToParentViewController:self];
+    [nav.view setFrame:self.view.frame];
     [self.view addSubview:nav.view];
     [self addChildViewController:nav];
     [nav didMoveToParentViewController:self];
 }
 
-- (UINavigationController *)createChildNavigationController
-{
-    return [UINavigationController alloc];
-}
-
 
 
 #pragma mark - UINavigationControllerDelegate
+
 
 - (id<UIViewControllerAnimatedTransitioning>)navigationController:(UINavigationController *)navigationController
                                   animationControllerForOperation:(UINavigationControllerOperation)operation
@@ -117,17 +104,6 @@ NSString * const CTAssetsPickerSelectedAssetsChangedNotification = @"CTAssetsPic
     {
         return nil;
     }
-}
-
-
-
-#pragma mark - Toolbar Appearance
-
-- (void)setupToolbarApperance
-{
-    NSDictionary *attributes = @{NSForegroundColorAttributeName : [UIColor blackColor]};
-    UIBarButtonItem *barButtonItem = [UIBarButtonItem appearanceWhenContainedIn:[UIToolbar class], [CTAssetsPickerController class], nil];
-    [barButtonItem setTitleTextAttributes:attributes forState:UIControlStateNormal];
 }
 
 
@@ -192,10 +168,8 @@ NSString * const CTAssetsPickerSelectedAssetsChangedNotification = @"CTAssetsPic
 {
     UINavigationController *nav = (UINavigationController *)self.childViewControllers[0];
     
-    BOOL enabled = (self.alwaysEnableDoneButton) ? YES : (self.selectedAssets.count > 0);
-    
     for (UIViewController *viewController in nav.viewControllers)
-        viewController.navigationItem.rightBarButtonItem.enabled = enabled;
+        viewController.navigationItem.rightBarButtonItem.enabled = (self.selectedAssets.count > 0);
 }
 
 
@@ -210,7 +184,7 @@ NSString * const CTAssetsPickerSelectedAssetsChangedNotification = @"CTAssetsPic
 
 #pragma mark - Accessors
 
-- (UINavigationController *)childNavigationController
+- (UINavigationController *)navigationController
 {
     return (UINavigationController *)self.childViewControllers.firstObject;
 }
@@ -271,12 +245,7 @@ NSString * const CTAssetsPickerSelectedAssetsChangedNotification = @"CTAssetsPic
 
 - (UIImageView *)padlockImageView
 {
-    UIImage *file        = [UIImage ctassetsPickerControllerImageNamed:@"CTAssetsPickerLocked"];
-    UIImage *image       = [file imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-    
-    UIImageView *padlock = [[UIImageView alloc] initWithImage:image];
-    padlock.tintColor    = [UIColor colorWithRed:129.0/255.0 green:136.0/255.0 blue:148.0/255.0 alpha:1];
-    
+    UIImageView *padlock = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"CTAssetsPickerLocked"]];
     padlock.translatesAutoresizingMaskIntoConstraints = NO;
     
     return padlock;
@@ -287,9 +256,9 @@ NSString * const CTAssetsPickerSelectedAssetsChangedNotification = @"CTAssetsPic
     NSString *format;
     
     if ([self isCameraDeviceAvailable])
-        format = CTAssetsPickerControllerLocalizedString(@"You can take photos and videos using the camera, or sync photos and videos onto your %@\nusing iTunes.");
+        format = NSLocalizedString(@"You can take photos and videos using the camera, or sync photos and videos onto your %@\nusing iTunes.", nil);
     else
-        format = CTAssetsPickerControllerLocalizedString(@"You can sync photos and videos onto your %@ using iTunes.");
+        format = NSLocalizedString(@"You can sync photos and videos onto your %@ using iTunes.", nil);
     
     return [NSString stringWithFormat:format, self.deviceModel];
 }
@@ -374,11 +343,11 @@ NSString * const CTAssetsPickerSelectedAssetsChangedNotification = @"CTAssetsPic
     UILabel *title =
     [self auxiliaryLabelWithFont:[UIFont boldSystemFontOfSize:17.0]
                            color:[UIColor colorWithRed:129.0/255.0 green:136.0/255.0 blue:148.0/255.0 alpha:1]
-                            text:CTAssetsPickerControllerLocalizedString(@"This app does not have access to your photos or videos.")];
+                            text:NSLocalizedString(@"This app does not have access to your photos or videos.", nil)];
     UILabel *message =
     [self auxiliaryLabelWithFont:[UIFont systemFontOfSize:14.0]
                            color:[UIColor colorWithRed:129.0/255.0 green:136.0/255.0 blue:148.0/255.0 alpha:1]
-                            text:CTAssetsPickerControllerLocalizedString(@"You can enable access in Privacy Settings.")];
+                            text:NSLocalizedString(@"You can enable access in Privacy Settings.", nil)];
     
     UIView *centerView = [self centerViewWithViews:@[padlock, title, message]];
     
@@ -390,11 +359,19 @@ NSString * const CTAssetsPickerSelectedAssetsChangedNotification = @"CTAssetsPic
 
 - (UIView *)noAssetsView
 {
+    /*
     UILabel *title =
     [self auxiliaryLabelWithFont:[UIFont systemFontOfSize:26.0]
                            color:[UIColor colorWithRed:153.0/255.0 green:153.0/255.0 blue:153.0/255.0 alpha:1]
-                            text:CTAssetsPickerControllerLocalizedString(@"No Photos or Videos")];
+                            text:NSLocalizedString(@"No Photos or Videos", nil)];
+     */
     
+    UILabel *title =
+    [self auxiliaryLabelWithFont:[UIFont systemFontOfSize:26.0]
+                           color:[UIColor colorWithRed:153.0/255.0 green:153.0/255.0 blue:153.0/255.0 alpha:1]
+                            text:NSLocalizedString(@"空", nil)];
+    
+    /*
     UILabel *message =
     [self auxiliaryLabelWithFont:[UIFont systemFontOfSize:18.0]
                            color:[UIColor colorWithRed:153.0/255.0 green:153.0/255.0 blue:153.0/255.0 alpha:1]
@@ -404,7 +381,13 @@ NSString * const CTAssetsPickerSelectedAssetsChangedNotification = @"CTAssetsPic
     
     NSDictionary *viewsDictionary = NSDictionaryOfVariableBindings(title, message);
     [centerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[title]-[message]|" options:0 metrics:nil views:viewsDictionary]];
-
+     */
+    
+    UIView *centerView = [self centerViewWithViews:@[title]];
+    
+    NSDictionary *viewsDictionary = NSDictionaryOfVariableBindings(title);
+    [centerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[title]|" options:0 metrics:nil views:viewsDictionary]];
+    
     return [self auxiliaryViewWithCenterView:centerView];
 }
 
@@ -432,17 +415,13 @@ NSString * const CTAssetsPickerSelectedAssetsChangedNotification = @"CTAssetsPic
     NSString *format;
     
     if (photoSelected && videoSelected)
-        format = CTAssetsPickerControllerLocalizedString(@"%ld Items Selected");
+        format = NSLocalizedString(@"%ld Items Selected", nil);
     
     else if (photoSelected)
-        format = (self.selectedAssets.count > 1) ?
-        CTAssetsPickerControllerLocalizedString(@"%ld Photos Selected") :
-        CTAssetsPickerControllerLocalizedString(@"%ld Photo Selected");
+        format = (self.selectedAssets.count > 1) ? NSLocalizedString(@"%ld Photos Selected", nil) : NSLocalizedString(@"%ld Photo Selected", nil);
     
     else if (videoSelected)
-        format = (self.selectedAssets.count > 1) ?
-        CTAssetsPickerControllerLocalizedString(@"%ld Videos Selected") :
-        CTAssetsPickerControllerLocalizedString(@"%ld Video Selected");
+        format = (self.selectedAssets.count > 1) ? NSLocalizedString(@"%ld Videos Selected", nil) : NSLocalizedString(@"%ld Video Selected", nil);
     
     return [NSString stringWithFormat:format, (long)self.selectedAssets.count];
 }
@@ -457,7 +436,11 @@ NSString * const CTAssetsPickerSelectedAssetsChangedNotification = @"CTAssetsPic
                                      style:UIBarButtonItemStylePlain
                                     target:nil
                                     action:nil];
-
+    
+    NSDictionary *attributes = @{NSForegroundColorAttributeName : [UIColor blackColor]};
+    
+    [title setTitleTextAttributes:attributes forState:UIControlStateNormal];
+    [title setTitleTextAttributes:attributes forState:UIControlStateDisabled];
     [title setEnabled:NO];
     
     return title;

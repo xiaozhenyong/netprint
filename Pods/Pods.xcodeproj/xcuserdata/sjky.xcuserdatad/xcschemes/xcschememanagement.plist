@@ -4,7 +4,7 @@
 <dict>
 	<key>SchemeUserState</key>
 	<dict>
-		<key>Pods-CTAssetsPickerController-CTAssetsPickerController.xcscheme</key>
+		<key>Pods-AFNetworking.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
@@ -22,17 +22,17 @@
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
-		<key>2B0BC640F10D810560315EB3</key>
+		<key>8855CE28DE137D8B882ED45C</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>D490FE0A757606685A8FD6BC</key>
+		<key>C8A1FDDEF65170FC9F32B01C</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>FF1924E2C2EAFA5760FBA642</key>
+		<key>F9E3712461EF6AB6A19501D5</key>
 		<dict>
 			<key>primary</key>
 			<true/>

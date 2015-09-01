@@ -7,6 +7,14 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "ViewController.h"
+#import "CartViewController.h"
+#import "UserIndexViewController.h"
 
 @interface PayFinishViewController : UIViewController
+
+- (IBAction)toViewController:(id)sender;
+- (IBAction)toCartViewController:(id)sender;
+- (IBAction)toUserIndexViewController:(id)sender;
+
 @end

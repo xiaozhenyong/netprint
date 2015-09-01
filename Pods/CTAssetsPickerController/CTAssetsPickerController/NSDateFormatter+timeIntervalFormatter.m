@@ -26,7 +26,6 @@
  */
 
 #import "NSDateFormatter+timeIntervalFormatter.h"
-#import "NSBundle+CTAssetsPickerController.h"
 
 
 
@@ -53,23 +52,17 @@
     if (components.hour > 0)
         string = [string stringByAppendingFormat:@"%ld %@",
                   (long)components.hour,
-                  (components.hour > 1) ?
-                  CTAssetsPickerControllerLocalizedString(@"hours") :
-                  CTAssetsPickerControllerLocalizedString(@"hour")];
+                  (components.hour > 1) ? NSLocalizedString(@"hours", nil) : NSLocalizedString(@"hour", nil)];
     
     if (components.minute > 0)
         string = [string stringByAppendingFormat:@"%ld %@",
                   (long)components.minute,
-                  (components.minute > 1) ?
-                  CTAssetsPickerControllerLocalizedString(@"minutes") :
-                  CTAssetsPickerControllerLocalizedString(@"minute")];
+                  (components.minute > 1) ? NSLocalizedString(@"minutes", nil) : NSLocalizedString(@"minute", nil)];
     
     if (components.second > 0)
         string = [string stringByAppendingFormat:@"%ld %@",
                   (long)components.second,
-                  (components.second > 1) ?
-                  CTAssetsPickerControllerLocalizedString(@"seconds") :
-                  CTAssetsPickerControllerLocalizedString(@"second")];
+                  (components.second > 1) ? NSLocalizedString(@"seconds", nil) : NSLocalizedString(@"second", nil)];
     
     return string;
 }
@@ -82,8 +75,8 @@
     NSDate *date2 = [[NSDate alloc] initWithTimeInterval:timeInterval sinceDate:date1];
     
     unsigned int unitFlags =
-    NSCalendarUnitSecond | NSCalendarUnitMinute | NSCalendarUnitHour |
-    NSCalendarUnitDay | NSCalendarUnitMonth | NSCalendarUnitYear;
+    NSSecondCalendarUnit | NSMinuteCalendarUnit | NSHourCalendarUnit |
+    NSDayCalendarUnit | NSMonthCalendarUnit | NSYearCalendarUnit;
     
     return [calendar components:unitFlags
                        fromDate:date1

@@ -21,19 +21,7 @@
 - (IBAction)addPhotoNumBut:(id)sender;
 @property (strong, nonatomic) IBOutlet UILabel *photoNum;
 
-/*
 @property (strong, nonatomic) IBOutlet UIView *editPhotoField;
-
-@property (strong, nonatomic) IBOutlet UIView *imageField;
-@property (strong, nonatomic) IBOutlet UIImageView *assetImageView;
-@property (strong, nonatomic) IBOutlet UIView *editPhoto;
-
-- (IBAction)crop:(id)sender;
-- (IBAction)blank:(id)sender;
-- (IBAction)original:(id)sender;
-*/
-@property (strong, nonatomic) IBOutlet UIView *editPhotoField;
-
 
 @property (strong, nonatomic) IBOutlet UIView *editPhoto;
 - (IBAction)crop:(id)sender;

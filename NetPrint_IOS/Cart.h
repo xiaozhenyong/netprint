@@ -11,12 +11,17 @@
 
 
 @interface Cart : NSManagedObject
-
+//本机购物车的ID
 @property (nonatomic, retain) NSString * cartId;
+//商品ID
 @property (nonatomic, retain) NSString * goodsId;
+//照片总数
 @property (nonatomic, retain) NSString * num;
+//照片及其数量
 @property (nonatomic, retain) NSData * detail;
+//商品总额
 @property (nonatomic, retain) NSString * price;
+//商品名称
 @property (nonatomic, retain) NSString * goodsName;
 
 @end

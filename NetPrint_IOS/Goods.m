@@ -2,7 +2,7 @@
 //  Goods.m
 //  NetPrint_IOS
 //
-//  Created by sjkysjky on 15/7/6.
+//  Created by xiaozhenyong on 15/7/6.
 //  Copyright (c) 2015年 世纪开元. All rights reserved.
 //
 

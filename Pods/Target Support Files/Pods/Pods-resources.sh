@@ -58,10 +58,32 @@ install_resource()
   esac
 }
 if [[ "$CONFIGURATION" == "Debug" ]]; then
-  install_resource "${BUILT_PRODUCTS_DIR}/CTAssetsPickerController.bundle"
+  install_resource "CTAssetsPickerController/CTAssetsPickerController/CTAssetsPicker.xcassets/CTAssetsPickerChecked.imageset/CTAssetsPickerChecked.png"
+  install_resource "CTAssetsPickerController/CTAssetsPickerController/CTAssetsPicker.xcassets/CTAssetsPickerChecked.imageset/CTAssetsPickerChecked@2x.png"
+  install_resource "CTAssetsPickerController/CTAssetsPickerController/CTAssetsPicker.xcassets/CTAssetsPickerEmptyAsset.imageset/CTAssetsPickerEmptyAsset.png"
+  install_resource "CTAssetsPickerController/CTAssetsPickerController/CTAssetsPicker.xcassets/CTAssetsPickerEmptyAsset.imageset/CTAssetsPickerEmptyAsset@2x.png"
+  install_resource "CTAssetsPickerController/CTAssetsPickerController/CTAssetsPicker.xcassets/CTAssetsPickerEmptyCell.imageset/CTAssetsPickerEmptyCell.png"
+  install_resource "CTAssetsPickerController/CTAssetsPickerController/CTAssetsPicker.xcassets/CTAssetsPickerEmptyCell.imageset/CTAssetsPickerEmptyCell@2x.png"
+  install_resource "CTAssetsPickerController/CTAssetsPickerController/CTAssetsPicker.xcassets/CTAssetsPickerLocked.imageset/CTAssetsPickerLocked.png"
+  install_resource "CTAssetsPickerController/CTAssetsPickerController/CTAssetsPicker.xcassets/CTAssetsPickerLocked.imageset/CTAssetsPickerLocked@2x.png"
+  install_resource "CTAssetsPickerController/CTAssetsPickerController/CTAssetsPicker.xcassets/CTAssetsPickerPlay.imageset/CTAssetsPickerPlay.png"
+  install_resource "CTAssetsPickerController/CTAssetsPickerController/CTAssetsPicker.xcassets/CTAssetsPickerPlay.imageset/CTAssetsPickerPlay@2x.png"
+  install_resource "CTAssetsPickerController/CTAssetsPickerController/CTAssetsPicker.xcassets/CTAssetsPickerVideo.imageset/CTAssetsPickerVideo.png"
+  install_resource "CTAssetsPickerController/CTAssetsPickerController/CTAssetsPicker.xcassets/CTAssetsPickerVideo.imageset/CTAssetsPickerVideo@2x.png"
 fi
 if [[ "$CONFIGURATION" == "Release" ]]; then
-  install_resource "${BUILT_PRODUCTS_DIR}/CTAssetsPickerController.bundle"
+  install_resource "CTAssetsPickerController/CTAssetsPickerController/CTAssetsPicker.xcassets/CTAssetsPickerChecked.imageset/CTAssetsPickerChecked.png"
+  install_resource "CTAssetsPickerController/CTAssetsPickerController/CTAssetsPicker.xcassets/CTAssetsPickerChecked.imageset/CTAssetsPickerChecked@2x.png"
+  install_resource "CTAssetsPickerController/CTAssetsPickerController/CTAssetsPicker.xcassets/CTAssetsPickerEmptyAsset.imageset/CTAssetsPickerEmptyAsset.png"
+  install_resource "CTAssetsPickerController/CTAssetsPickerController/CTAssetsPicker.xcassets/CTAssetsPickerEmptyAsset.imageset/CTAssetsPickerEmptyAsset@2x.png"
+  install_resource "CTAssetsPickerController/CTAssetsPickerController/CTAssetsPicker.xcassets/CTAssetsPickerEmptyCell.imageset/CTAssetsPickerEmptyCell.png"
+  install_resource "CTAssetsPickerController/CTAssetsPickerController/CTAssetsPicker.xcassets/CTAssetsPickerEmptyCell.imageset/CTAssetsPickerEmptyCell@2x.png"
+  install_resource "CTAssetsPickerController/CTAssetsPickerController/CTAssetsPicker.xcassets/CTAssetsPickerLocked.imageset/CTAssetsPickerLocked.png"
+  install_resource "CTAssetsPickerController/CTAssetsPickerController/CTAssetsPicker.xcassets/CTAssetsPickerLocked.imageset/CTAssetsPickerLocked@2x.png"
+  install_resource "CTAssetsPickerController/CTAssetsPickerController/CTAssetsPicker.xcassets/CTAssetsPickerPlay.imageset/CTAssetsPickerPlay.png"
+  install_resource "CTAssetsPickerController/CTAssetsPickerController/CTAssetsPicker.xcassets/CTAssetsPickerPlay.imageset/CTAssetsPickerPlay@2x.png"
+  install_resource "CTAssetsPickerController/CTAssetsPickerController/CTAssetsPicker.xcassets/CTAssetsPickerVideo.imageset/CTAssetsPickerVideo.png"
+  install_resource "CTAssetsPickerController/CTAssetsPickerController/CTAssetsPicker.xcassets/CTAssetsPickerVideo.imageset/CTAssetsPickerVideo@2x.png"
 fi
 
 rsync -avr --copy-links --no-relative --exclude '*/.svn/*' --files-from="$RESOURCES_TO_COPY" / "${CONFIGURATION_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}"

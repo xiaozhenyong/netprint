@@ -11,9 +11,11 @@
 @interface DistributionMsgViewController (){
     NSArray *dlsPickerViewData;
     NSDictionary *all,*mdiDic;
-    NSString *dlsId,*dlsCostPrice,*dlsDtName,*userName,*password,*allPrice,*delId,*uId;
+    NSString *dlsId,*dlsCostPrice,*dlsDtName,*userName,*password,*allPrice,*delId,*uId,*code;
     NSMutableData *responseData;
     __block NSMutableDictionary *imgMsg;
+    NSDictionary *uInfo;
+    UIStoryboard *storyboard;
 
 }
 
@@ -28,14 +30,22 @@
     [self initPickerView];
     [self initPickerViewData];
     
+    storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(getUserMsgWithNotification:) name:@"UserLoginNoti" object:nil];
     
+    [self.couponTextField addTarget:self action:@selector(clearCouponTextField) forControlEvents:UIControlEventTouchDown];
+    
+}
+
+- (void) clearCouponTextField{
+    self.couponTextField.text = @"";
 }
 
 - (void) getUserMsgWithNotification:(NSNotification *)notification{
     
     NSDictionary *dic = [notification userInfo];
+    uInfo = dic;
     userName = [dic valueForKey:@"userName"];
     password = [dic valueForKey:@"password"];
     uId = [dic valueForKey:@"uId"];
@@ -52,12 +62,12 @@
     
     dlsPickerViewData = [all valueForKey:@"dls"];
     dlsDtName = [[dlsPickerViewData objectAtIndex:0] valueForKey:@"dt_name"];
-    self.distributionMethodLabel.text = dlsDtName;
+    self.distributionMethodTextField.text = dlsDtName;
     
 }
 
 - (void)initPage{
-    self.distributionMethodLabel.delegate = self;
+    self.distributionMethodTextField.delegate = self;
     
     all = [self.mdi valueForKey:@"value"];
     mdiDic = [all valueForKey:@"mdi"];
@@ -115,15 +125,13 @@
     dlsId = [NSString stringWithFormat:@"%@",[dlsDic valueForKey:@"id"]];
     dlsCostPrice = [NSString stringWithFormat:@"%@",[dlsDic valueForKey:@"costprice"]];
     
-    NSLog(@"------costprice----->%@",dlsCostPrice);
-    
     dlsDtName = [dlsDic valueForKey:@"dt_name"];
     self.freightLabel.text = dlsCostPrice;
-    self.distributionMethodLabel.text = dlsDtName;
+    self.distributionMethodTextField.text = dlsDtName;
     
     
     NSString *frei = [NSString stringWithFormat:@"%@",[dlsDic valueForKey:@"costprice"]];
-    NSString *gprice = [NSString stringWithFormat:@"%@",[all valueForKey:@"totalGoodsPirce"]];
+    NSString *gprice = [NSString stringWithFormat:@"%@",[all valueForKey:@"totalGoodsPrice"]];
     NSString *cheap = [NSString stringWithFormat:@"%@",[all valueForKey:@"cheap"]];
     
     
@@ -131,15 +139,14 @@
     NSDecimalNumber *_gprice = [NSDecimalNumber decimalNumberWithString:gprice];
     NSDecimalNumber *_cheap = [NSDecimalNumber decimalNumberWithString:cheap];
     
-    NSDecimalNumber *_allprice = [[_frei decimalNumberByAdding:_gprice]decimalNumberByAdding:_cheap];
+    NSDecimalNumber *_allprice = [[_frei decimalNumberByAdding:_gprice]decimalNumberBySubtracting:_cheap];
     allPrice = [_allprice stringValue];
     self.priceLabel.text = allPrice;
     
 }
 
 - (BOOL)textFieldShouldBeginEditing:(UITextField *)textField{
-    if ([textField isEqual:(UITextField *)self.distributionMethodLabel]) {
-        NSLog(@"touch -----------");
+    if ([textField isEqual:(UITextField *)self.distributionMethodTextField]) {
         self .dlsPickerView.hidden = NO;
     }
     return NO;
@@ -155,7 +162,6 @@
  */
 
 - (IBAction)addrManageButton:(id)sender {
-    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     AddressManageViewController *addressManage = [storyboard instantiateViewControllerWithIdentifier:@"addressManageViewController"];
     addressManage.userDic = [NSDictionary dictionaryWithObjectsAndKeys:userName,@"u",password,@"p", nil];
     addressManage.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
@@ -163,201 +169,256 @@
 }
 
 - (IBAction)useCouponButton:(id)sender {
+    NSString *coupon = self.couponTextField.text;
+    code = coupon;
+    NSMutableArray *cartsArray = [[NSMutableArray alloc]init];
+    
+    if (coupon != nil && ![@"" isEqualToString:coupon]) {
+        for (Cart *cart in self.cartArray) {
+            NSMutableDictionary *cartDic = [[NSMutableDictionary alloc]init];
+            
+            NSArray *detail = [NSKeyedUnarchiver unarchiveObjectWithData:cart.detail];
+            NSMutableArray *detailArray = [[NSMutableArray alloc]init];
+            for (NSDictionary *assetDic in detail) {
+                
+                [detailArray addObject:[self jsonStringWithNSDictionary:assetDic]];
+            }
+            
+            
+            NSInteger num = [cart.num integerValue];
+            float price = [cart.price floatValue];
+            
+            [cartDic setValue:detailArray forKey:@"detail"];
+            [cartDic setValue:cart.cartId forKey:@"cartId"];
+            [cartDic setValue:cart.goodsId forKey:@"goodsId"];
+            [cartDic setValue:[NSNumber numberWithInteger:num] forKey:@"num"];
+            [cartDic setValue:[NSNumber numberWithFloat:price] forKey:@"price"];
+            [cartDic setValue:cart.goodsName forKey:@"goodsName"];
+            
+            [cartsArray addObject:[self jsonStringWithNSDictionary:cartDic]];
+        }
+        NSData *cartsData = [NSJSONSerialization dataWithJSONObject:cartsArray options:kNilOptions error:nil];
+        NSString *cartsString = [[NSString alloc]initWithData:cartsData encoding:NSUTF8StringEncoding];
+        NSMutableDictionary *requestDic = [[NSMutableDictionary alloc]init];
+        [requestDic setValue:userName forKey:@"user"];
+        [requestDic setValue:password forKey:@"pwd"];
+        [requestDic setValue:cartsString forKey:@"carts"];
+        [requestDic setValue:coupon forKey:@"code"];
+        [requestDic setValue:dlsId forKey:@"deliveryId"];
+        
+        AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+        [manager POST:PHONE_ORDER_SETTLE parameters:requestDic success:^(AFHTTPRequestOperation *operation, id responseObject) {
+            
+            NSLog(@"response------>%@",responseObject);
+            
+            NSDictionary *resDic = responseObject;
+            NSString *cheapValue = [NSString stringWithFormat:@"%@",[resDic valueForKey:@"cheap"]];
+            
+            NSDecimalNumber *_cheap = [NSDecimalNumber decimalNumberWithString:cheapValue];
+            
+            self.couponPriceLabel.text = cheapValue;
+            
+            NSDecimalNumber *_totalPrice = [NSDecimalNumber decimalNumberWithString:allPrice];
+            NSDecimalNumber *newTotal = [_totalPrice decimalNumberBySubtracting:_cheap];
+            self.priceLabel.text = [newTotal stringValue];
+            allPrice = [newTotal stringValue];
+            
+            NSLog(@"allprice------->%@",allPrice);
+        } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+            
+        }];
+    }else{
+        
+    }
+}
+
+- (NSString *)jsonStringWithNSDictionary:(NSDictionary *)dic{
+    NSData *assetData = [NSJSONSerialization dataWithJSONObject:dic options:NSJSONWritingPrettyPrinted error:nil];
+    NSString *jsonString = [[NSString alloc]initWithData:assetData encoding:NSUTF8StringEncoding];
+    return jsonString;
 }
 
 - (IBAction)submitOrderButton:(id)sender {
-    [self uploadImage];
-  
-    /*
-    dispatch_queue_t disUploadImage = dispatch_queue_create("dis.upload.image", DISPATCH_QUEUE_CONCURRENT);
-    dispatch_async(disUploadImage, ^{
-     [self uploadImage];
-       
-    });
-    
-    dispatch_barrier_async(disUploadImage, ^{
-        NSLog(@"----3----");
-    });
-    */
+//    [self uploadImage];
+    [self uploadImageNew];
 }
 
 - (IBAction)back:(id)sender {
-    [self dismissViewControllerAnimated:YES completion:nil];
+    [self dismissViewControllerAnimated:YES completion:^{
+        [[NSNotificationCenter defaultCenter]postNotificationName:@"userInfo" object:nil userInfo:uInfo];
+    }];
 
 }
 
-- (void)uploadImage{
-    
+- (IBAction)toViewController:(id)sender {
+    ViewController *viewCon = [storyboard instantiateViewControllerWithIdentifier:@"viewController"];
+    [self presentViewController:viewCon animated:YES completion:^{
+        [[NSNotificationCenter defaultCenter]postNotificationName:@"userInfo" object:nil userInfo:uInfo];
+    }];
+}
+
+- (IBAction)toCartViewController:(id)sender {
+    CartViewController *cartViewCon = [storyboard instantiateViewControllerWithIdentifier:@"cartViewController"];
+    [self presentViewController:cartViewCon animated:YES completion:^{
+        [[NSNotificationCenter defaultCenter]postNotificationName:@"userInfo" object:nil userInfo:uInfo];
+    }];
+}
+
+- (IBAction)toUserIndexViewController:(id)sender {
+    UserIndexViewController *userIndexViewCon = [storyboard instantiateViewControllerWithIdentifier:@"userIndexViewController"];
+    [self presentViewController:userIndexViewCon animated:YES completion:^{
+        [[NSNotificationCenter defaultCenter]postNotificationName:@"userInfo" object:nil userInfo:uInfo];
+    }];
+}
+
+- (void) uploadImageNew{
+
+    __block NSInteger i=0;
+    NSInteger count = [self countNum];
     imgMsg = [[NSMutableDictionary alloc]init];
-    dispatch_group_t group = dispatch_group_create();
     
-    //分界线的标识符
-    NSString *TWITTERFON_FORM_BOUNDARY = @"AaB03x";
-    NSURL *url = [NSURL URLWithString:PHONE_UPLOAD_PHOTO];
-    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+    NSMutableDictionary *dataDic = [[NSMutableDictionary alloc]init];
+    [dataDic setValue:userName forKey:@"userName"];
+    [dataDic setValue:password forKey:@"pwd"];
+    [dataDic setValue:@"" forKey:@"type"];
     
-    //分界线 --AaB03x
-    NSString *MPboundary = [[NSString alloc]initWithFormat:@"--%@",TWITTERFON_FORM_BOUNDARY];
-    //结束符 AaB03x--
-    NSString *endMPboundary = [[NSString alloc]initWithFormat:@"%@--",MPboundary];
-    //http body的字符串
-    NSMutableString *body = [[NSMutableString alloc]init];
     
-    //添加分界线，换行
-    [body appendFormat:@"%@\r\n",MPboundary];
-    
-    //添加字段名称，换2行
-    [body appendFormat:@"Content-Disposition: form-data; name=\"%@\"\r\n\r\n",@"userName"];
-    //添加字段的值
-    [body appendFormat:@"%@\r\n",userName];
-    
-    //添加分界线，换行
-    [body appendFormat:@"%@\r\n",MPboundary];
-    //添加字段名称，换2行
-    [body appendFormat:@"Content-Disposition: form-data; name=\"%@\"\r\n\r\n",@"pwd"];
-    //添加字段的值
-    [body appendFormat:@"%@\r\n",password];
-    
-    //添加分界线，换行
-    [body appendFormat:@"%@\r\n",MPboundary];
-    //添加字段名称，换2行
-    [body appendFormat:@"Content-Disposition: form-data; name=\"%@\"\r\n\r\n",@"type"];
-    //添加字段的值
-    [body appendFormat:@"%@\r\n",@""];
-    
-    //添加分界线，换行
-    [body appendFormat:@"%@\r\n",MPboundary];
-    //添加字段名称，换2行
-    [body appendFormat:@"Content-Disposition: form-data; name=\"%@\"\r\n\r\n",@"set"];
-    //添加字段的值
-    [body appendFormat:@"%@\r\n",@""];
-    
-        for (Cart *cart in self.cartArray) {
-            NSArray *arrayImage = [NSKeyedUnarchiver unarchiveObjectWithData:cart.detail];
+    for (Cart *cart in self.cartArray) {
+        NSArray *arrayImage = [NSKeyedUnarchiver unarchiveObjectWithData:cart.detail];
+        
+        for (NSDictionary *dicAsset in arrayImage) {
             
+            NSLog(@"set------>%@",[dicAsset valueForKey:@"set"]);
             
-            for (NSDictionary *dicAsset in arrayImage) {
-                NSMutableData *requestData = [[NSMutableData alloc]init];
+            [dataDic setValue:[dicAsset valueForKey:@"set"] forKey:@"set"];
+            
+            ALAssetsLibrary *library = [[ALAssetsLibrary alloc]init];
+            
+            NSURL *assetUrl = [NSURL URLWithString:[dicAsset valueForKey:@"path"]];
+            
+            [library assetForURL:assetUrl resultBlock:^(ALAsset *asset){
                 
-                NSMutableString *imageBody = [[NSMutableString alloc]init];
-                [imageBody appendFormat:@"%@\r\n",MPboundary];
+                ALAssetRepresentation *rep = [asset defaultRepresentation];
                 
-                ALAssetsLibrary *library = [[ALAssetsLibrary alloc]init];
+                Byte *buffer = (Byte *)malloc([rep size]);
+                NSUInteger buffered = [rep getBytes:buffer fromOffset:0 length:[rep size] error:nil];
+                NSData *data = [NSData dataWithBytesNoCopy:buffer length:buffered freeWhenDone:YES];
                 
-                NSURL *assetUrl = [NSURL URLWithString:[dicAsset valueForKey:@"path"]];
+                /*
+                 NSMutableURLRequest *request = [[AFHTTPRequestSerializer serializer]multipartFormRequestWithMethod:@"POST" URLString:PHONE_UPLOAD_PHOTO parameters:dataDic constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
+                 [formData appendPartWithFileData:data name:@"file" fileName:[rep filename] mimeType:@"image/jpeg/png"];
+                 } error:nil];
+                 
+                 AFURLSessionManager *manager = [[AFURLSessionManager alloc]initWithSessionConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]];
+                 NSProgress *progess = nil;
+                 NSURLSessionUploadTask *uploadTask = [manager uploadTaskWithStreamedRequest:request progress:&progess completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
+                 if (error) {
+                 NSLog(@"uploadError: %@",error);
+                 }else{
+                 NSLog(@"success: %@-- %@",response,responseObject);
+                 
+                 NSDictionary *dicId = responseObject;
+                 NSInteger imgId = (NSInteger)[dicId valueForKey:@"id"];
+                 [imgMsg setValue:[NSNumber numberWithInteger:imgId] forKey:[NSString stringWithFormat:@"%@",[assetUrl absoluteString]]];
+                 }
+                 }];
+                 [uploadTask resume];
+                 */
                 
- //                 dispatch_queue_t disUploadImage = dispatch_queue_create("dis.upload.image", DISPATCH_QUEUE_CONCURRENT);
-                dispatch_group_enter(group);
-                [library assetForURL:assetUrl resultBlock:^(ALAsset *asset){
+                AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+                [manager POST:PHONE_UPLOAD_PHOTO parameters:dataDic constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
+                    [formData appendPartWithFileData:data name:@"file" fileName:[rep filename] mimeType:@"image/jpeg/png"];
+                } success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                    NSDictionary *dicId = responseObject;
                     
-                    ALAssetRepresentation *rep = [asset defaultRepresentation];
+                    NSInteger imgId = [[NSString stringWithFormat:@"%@",[dicId valueForKey:@"id"]] integerValue];
                     
-                    [requestData appendData:[body dataUsingEncoding:NSUTF8StringEncoding]];
+                    [imgMsg setValue:[NSNumber numberWithInteger:imgId] forKey:[NSString stringWithFormat:@"%@",[assetUrl absoluteString]]];
+                    i++;
+                    if (i == count) {
+                        [self orderSubmit];
+                    }
                     
-                    [imageBody appendFormat:@"Content-Disposition: form-data; name=\"file\";filename=\"%@\"\r\n\r\n",[rep filename]];
                     
-                    
-                    Byte *buffer = (Byte *)malloc([rep size]);
-                    NSUInteger buffered = [rep getBytes:buffer fromOffset:0 length:[rep size] error:nil];
-                    NSData *data = [NSData dataWithBytesNoCopy:buffer length:buffered freeWhenDone:YES];
-                    
-                    [requestData appendData:[imageBody dataUsingEncoding:NSUTF8StringEncoding]];
-                    [requestData appendData:data];
-                    [requestData appendData:[@"\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
-                    NSString *end = [[NSString alloc]initWithFormat:@"%@\r\n",endMPboundary];
-                    [requestData appendData:[end dataUsingEncoding:NSUTF8StringEncoding]];
-                    
-                    NSString *content = [[NSString alloc]initWithFormat:@"multipart/form-data;boundary=%@",TWITTERFON_FORM_BOUNDARY];
-                    
-                    [request setValue:content forHTTPHeaderField:@"Content-Type"];
-                    [request setValue:[NSString stringWithFormat:@"%lu",(unsigned long)[requestData length]] forHTTPHeaderField:@"Content-Length"];
-                    [request setHTTPBody:requestData];
-                    [request setHTTPMethod:@"POST"];
-                    
-                    /*
-                     NSURLConnection *conn = [NSURLConnection connectionWithRequest:request delegate:self];
-                     [conn start];
-                     
-                     */
-                    NSError *error;
-                    NSData *resData = [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:&error];
-                    
-                    id jsonValue = [NSJSONSerialization JSONObjectWithData:resData options:NSJSONReadingMutableContainers error:nil];
-
-                    [imgMsg setValue:[NSString stringWithFormat:@"%@",[jsonValue valueForKey:@"id"]] forKey:[NSString stringWithFormat:@"%@",[assetUrl absoluteString]]];
-
-                    dispatch_group_leave(group);
-                } failureBlock:nil];
+                } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                    NSLog(@"uploadError: %@",error);
+                }];
                 
-            }
+            } failureBlock:nil];
+            
         }
-    dispatch_queue_t disForOrder = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-    dispatch_group_notify(group,disForOrder, ^{
-        NSLog(@"---------->%ld",[imgMsg count]);
-        
-        NSMutableDictionary *cartDic = [[NSMutableDictionary alloc]init];
-        
-        for (Cart *cart in self.cartArray) {
-            NSMutableArray *selArray = [[NSMutableArray alloc]init];
+    }
+}
 
-            NSArray *arrayImage = [NSKeyedUnarchiver unarchiveObjectWithData:cart.detail];
-            for (NSDictionary *dic in arrayImage) {
-                NSDictionary *selDic = [NSDictionary dictionaryWithObjectsAndKeys:[imgMsg valueForKey:[dic valueForKey:@"path"]],@"imgId",[dic valueForKey:@"num"],@"num", nil];
-                [selArray addObject:selDic];
-            }
-            NSDictionary *secDic = [NSDictionary dictionaryWithObjectsAndKeys:@"0",@"state",[NSString stringWithFormat:@"%ld",[arrayImage count]],@"total",selArray,@"sel", nil];
-            [cartDic setValue:secDic forKey:cart.goodsId];
+- (NSInteger) countNum{
+    NSInteger i = 0;
+    
+    for (Cart *cart in self.cartArray) {
+        NSArray *arrayImage = [NSKeyedUnarchiver unarchiveObjectWithData:cart.detail];
+        
+        i = i+[arrayImage count];
+    };
+    return i;
+}
+
+
+- (void) orderSubmit{
+    NSMutableDictionary *cartDic = [[NSMutableDictionary alloc]init];
+    
+    for (Cart *cart in self.cartArray) {
+        NSMutableArray *selArray = [[NSMutableArray alloc]init];
+        
+        NSArray *arrayImage = [NSKeyedUnarchiver unarchiveObjectWithData:cart.detail];
+        for (NSDictionary *dic in arrayImage) {
+            NSInteger _num = [[dic valueForKey:@"num"] integerValue];
+            NSDictionary *selDic = [NSDictionary dictionaryWithObjectsAndKeys:[imgMsg valueForKey:[dic valueForKey:@"path"]],@"imgId",[NSNumber numberWithInteger:_num],@"num", nil];
+            [selArray addObject:selDic];
+        }
+        NSDictionary *secDic = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInteger:0],@"state",[NSNumber numberWithInteger:[arrayImage count]],@"total",selArray,@"sel", nil];
+        [cartDic setValue:secDic forKey:cart.goodsId];
+    }
+    
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:cartDic options:0 error:nil];
+    NSString *jsonString = [[NSString alloc]initWithData:jsonData encoding:NSUTF8StringEncoding];
+    
+    AFHTTPRequestOperationManager *orderManager = [AFHTTPRequestOperationManager manager];
+    NSMutableDictionary *dicPost = [[NSMutableDictionary alloc]init];
+    [dicPost setValue:userName forKey:@"userName"];
+    [dicPost setValue:password forKey:@"pwd"];
+    [dicPost setValue:jsonString forKey:@"detail"];
+    [dicPost setValue:code forKey:@"code"];
+    [dicPost setValue:dlsId forKey:@"deliveryId"];
+    [dicPost setValue:delId forKey:@"addressId"];
+    [orderManager POST:PHONE_ORDER_SUBMIT parameters:dicPost success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        NSDictionary *responseValue = responseObject;
+        if ([@"ok" isEqualToString:[responseValue valueForKey:@"res"]]) {
+            NSString *orderId = [responseValue valueForKey:@"orderId"];
+            
+            NSString *goodsPrice = self.goodsPriceLabel.text;
+            NSString *freight = self.freightLabel.text;
+            NSString *cheap = self.couponPriceLabel.text;
+            NSString *totalprice = self.priceLabel.text;
+            
+            UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+            PayOrderViewController *payOrder = [storyboard instantiateViewControllerWithIdentifier:@"payOrderViewController"];
+            payOrder.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
+            
+            payOrder.cartArray = self.cartArray;
+            
+            [self presentViewController:payOrder animated:YES completion:^{
+                NSDictionary *payOrderDic = [[NSDictionary alloc]initWithObjectsAndKeys:userName,@"userName",password,@"password",uId,@"uId",orderId,@"orderId",goodsPrice,@"goodsPrice",freight,@"freight",cheap,@"cheap",totalprice,@"totale", nil];
+                [[NSNotificationCenter defaultCenter]postNotificationName:@"payOrderNoti" object:nil userInfo:payOrderDic];
+                
+            }];
+            
+        }else{
+            NSLog(@"---sumbit order  fail---");
         }
         
-        NSLog(@"---cartDic---->%ld",[cartDic count]);
-        
-        NSData *jsonData = [NSJSONSerialization dataWithJSONObject:cartDic options:0 error:nil];
-        NSString *jsonString = [[NSString alloc]initWithData:jsonData encoding:NSUTF8StringEncoding];
-        
-        NSLog(@"jsonstring------->%@",jsonString);
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"OrderSubmitError: %@",error);
+    }];
 
-        NSString *baseUrl = [[NSString alloc]initWithFormat:PHONE_ORDER_SUBMIT];
-        NSURL *url = [NSURL URLWithString:baseUrl];
-        NSString *post = [NSString stringWithFormat:@"userName=%@&pwd=%@&detail=%@&code=%@&deliveryId=%@&addressId=%@",userName,password,jsonString,@"",dlsId,delId];
-        NSData *postData =[post dataUsingEncoding:NSUTF8StringEncoding];
-        NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
-        [request setHTTPMethod:@"POST"];
-        [request setHTTPBody:postData];
-        
-        NSOperationQueue *queue = [[NSOperationQueue alloc]init];
-        [NSURLConnection sendAsynchronousRequest:request queue:queue completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
-            if (data) {
-                id jsonValue = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
-                if ([@"ok" isEqualToString:[jsonValue valueForKey:@"res"]]) {
-                    NSString *orderId = [jsonValue valueForKey:@"orderId"];
-                    
-                    NSString *goodsPrice = self.goodsPriceLabel.text;
-                    NSString *freight = self.freightLabel.text;
-                    NSString *cheap = self.couponPriceLabel.text;
-                    NSString *totalprice = self.priceLabel.text;
-                    
-                    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-                    PayOrderViewController *payOrder = [storyboard instantiateViewControllerWithIdentifier:@"payOrderViewController"];
-                    payOrder.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
-                    
-                    payOrder.cartArray = self.cartArray;
-                    
-                    [self presentViewController:payOrder animated:YES completion:^{
-                        NSDictionary *payOrderDic = [[NSDictionary alloc]initWithObjectsAndKeys:userName,@"userName",password,@"password",uId,@"uId",orderId,@"orderId",goodsPrice,@"goodsPrice",freight,@"freight",cheap,@"cheap",totalprice,@"totale", nil];
-                        [[NSNotificationCenter defaultCenter]postNotificationName:@"payOrderNoti" object:nil userInfo:payOrderDic];
-                        
-                    }];
-                    
-                }else{
-                    NSLog(@"---sumbit order  fail---");
-                }
-            }else{
-                NSLog(@"----connection fail----");
-            }
-            
-            
-        }];
-    });
 }
 
 @end
