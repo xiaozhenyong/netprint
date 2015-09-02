@@ -10,7 +10,10 @@
 
 
 
-@interface UserIndexViewController ()
+@interface UserIndexViewController (){
+    UIStoryboard *storyboard;
+    NSDictionary *userInfo;
+}
 
 @end
 
@@ -20,6 +23,10 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+
+    
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(getUserMsgWithNotification:) name:@"UserLoginCompletionNotification" object:nil];
 }
 
@@ -31,8 +38,12 @@
 
     NSDictionary *dic = [notification userInfo];
     self.userName = [dic objectForKey:@"userName"];
-    self.userId = [dic objectForKey:@"userId"];
+    self.userId = [dic objectForKey:@"uId"];
     self.password = [dic objectForKey:@"password"];
+    
+    self.userNameLabel.text = userName;
+    
+    userInfo = dic;
 }
 
 /*
@@ -50,8 +61,7 @@
 
 - (IBAction)userMoney:(id)sender {
     
-    
-    NSArray *userInfo = [[NSMutableArray alloc]init];
+    NSArray *userInfoArray = [[NSMutableArray alloc]init];
     /*
     __block NSInteger infoId = 0;
     __block NSString *infoUserId = nil;
@@ -76,7 +86,7 @@
         }
         NSString *res = [jsonValue objectForKey:@"res"];
         if ([@"success" isEqualToString:res]) {
-            userInfo = [jsonValue objectForKey:@"info"];
+            userInfoArray = [jsonValue objectForKey:@"info"];
         }else{
             NSLog(@"-----------get  money fail-----------");
         }
@@ -110,11 +120,10 @@
     }];
     */
     
-    if (userInfo) {
-        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    if (userInfoArray) {
         UserMoneyViewController *userMoney = [storyboard instantiateViewControllerWithIdentifier:@"userMoneyViewController"];
         
-        userMoney.mUserInfo = userInfo;
+        userMoney.mUserInfo = userInfoArray;
         
         userMoney.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
         [self presentViewController:userMoney animated:YES completion:nil];
@@ -126,10 +135,9 @@
 
 - (IBAction)userAddressManage:(id)sender {
     
-    
-        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
         AddressManageViewController *addrManage = [storyboard instantiateViewControllerWithIdentifier:@"addressManageViewController"];
-    addrManage.userDic = [NSDictionary dictionaryWithObjectsAndKeys:userName,@"u",password,@"p", nil];
+    addrManage.userDic = userInfo;
+    //[NSDictionary dictionaryWithObjectsAndKeys:userName,@"userName",password,@"password",userId,@"uId", nil];
     
         addrManage.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
         [self presentViewController:addrManage animated:YES completion:nil];
@@ -142,10 +150,27 @@
 }
 
 - (IBAction)userReload:(id)sender {
-    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     LoginViewController *login = [storyboard instantiateViewControllerWithIdentifier:@"loginViewController"];
     login.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
     [self presentViewController:login
                        animated:YES completion:nil];
+}
+
+- (IBAction)toViewController:(id)sender {
+    ViewController *viewCon = [storyboard instantiateViewControllerWithIdentifier:@"viewController"];
+    [self gotoUIViewController:viewCon];
+}
+
+- (IBAction)toCartViewController:(id)sender {
+    CartViewController *cartViewCon = [storyboard instantiateViewControllerWithIdentifier:@"cartViewController"];
+    [self gotoUIViewController:cartViewCon];
+}
+
+- (void)gotoUIViewController:(UIViewController *)view{
+    [self presentViewController:view animated:YES completion:^{
+        if (userInfo) {
+            [[NSNotificationCenter defaultCenter]postNotificationName:@"userInfo" object:nil userInfo:userInfo];
+        }
+    }];
 }
 @end

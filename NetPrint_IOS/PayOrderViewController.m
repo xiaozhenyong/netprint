@@ -10,6 +10,8 @@
 
 @interface PayOrderViewController (){
     NSString *userName,*password,*orderId,*uId,*payPwd;
+    NSDictionary *userInfo;
+    UIStoryboard *storyboard;
 }
 @end
 
@@ -17,12 +19,16 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(initPage:) name:@"payOrderNoti" object:nil];
     [self initTableView];
 }
 
 - (void)initPage:(NSNotification *)notification{
     NSDictionary *dic = [notification userInfo];
+    
     userName = [dic valueForKey:@"userName"];
     password = [dic valueForKey:@"password"];
     uId = [dic valueForKey:@"uId"];
@@ -34,6 +40,9 @@
     NSLog(@"cheap------>%@",[dic valueForKey:@"cheap"]);
     
     self.totalPriceLabel.text = [dic valueForKey:@"totale"];
+    
+    
+    userInfo = [[NSDictionary alloc]initWithObjectsAndKeys:userName,@"userName",password,@"password",uId,@"uId", nil];
 }
 
 - (void)initTableView{
@@ -94,6 +103,27 @@
     
 }
 
+- (IBAction)toViewController:(id)sender {
+    ViewController *viewCon = [storyboard instantiateViewControllerWithIdentifier:@"viewController"];
+    [self gotoUIViewController:viewCon];
+}
+
+- (IBAction)toCartViewController:(id)sender {
+    CartViewController *cartViewCon = [storyboard instantiateViewControllerWithIdentifier:@"cartViewController"];
+    [self gotoUIViewController:cartViewCon];
+}
+
+- (IBAction)toUserIndexViewController:(id)sender {
+    UserIndexViewController *userIndexViewCon = [storyboard instantiateViewControllerWithIdentifier:@"userIndexViewController"];
+    [self gotoUIViewController:userIndexViewCon];
+}
+
+- (void)gotoUIViewController:(UIViewController *)viewCon{
+    [self presentViewController:viewCon animated:YES completion:^{
+        [[NSNotificationCenter defaultCenter]postNotificationName:@"userInfo" object:nil userInfo:userInfo];
+    }];
+}
+
 - (void)inputPayPassword{
     UIAlertView *alert= [[UIAlertView alloc] initWithTitle:@"支付密码" message:@"please input" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确定", nil];
     alert.alertViewStyle = UIAlertViewStyleSecureTextInput;
@@ -133,7 +163,7 @@
             }else if ([@"errpayOrder" isEqualToString:result]){
                 NSLog(@"--------errpayorder-----");
             }else{
-                UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+                
                 PayFinishViewController *payFinish = [storyboard instantiateViewControllerWithIdentifier:@"payFinishViewController"];
                 payFinish.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
                     

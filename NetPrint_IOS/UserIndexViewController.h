@@ -13,8 +13,14 @@
 #import "LoginViewController.h"
 #import "UserMoneyViewController.h"
 #import "AddressManageViewController.h"
+#import "ViewController.h"
+#import "CartViewController.h"
 
 @interface UserIndexViewController : UIViewController
+
+@property (strong, nonatomic) IBOutlet UILabel *userNameLabel;
+
+
 - (IBAction)userOrder:(id)sender;
 
 - (IBAction)userMoney:(id)sender;
@@ -26,6 +32,10 @@
 - (IBAction)userMsgSafe:(id)sender;
 
 - (IBAction)userReload:(id)sender;
+
+- (IBAction)toViewController:(id)sender;
+
+- (IBAction)toCartViewController:(id)sender;
 
 @property (strong,nonatomic)NSString *userName;
 @property (strong,nonatomic)NSString *password;

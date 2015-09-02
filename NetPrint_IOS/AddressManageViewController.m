@@ -275,4 +275,13 @@
     addAndEdit.userDic = self.userDic;
     [self presentViewController:addAndEdit animated:YES completion:nil];
 }
+
+- (IBAction)toViewController:(id)sender {
+}
+
+- (IBAction)toCartViewController:(id)sender {
+}
+
+- (IBAction)toUserIndexViewController:(id)sender {
+}
 @end

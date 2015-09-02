@@ -9,11 +9,19 @@
 #import <UIKit/UIKit.h>
 #import "AddrShowTableViewCell.h"
 #import "AddAndEditAddressViewController.h"
+#import "ViewController.h"
+#import "CartViewController.h"
+#import "UserIndexViewController.h"
+
 @interface AddressManageViewController : UIViewController<UITableViewDelegate,UITableViewDataSource>
 @property (strong, nonatomic) IBOutlet UITableView *addressShow;
-- (IBAction)back:(id)sender;
 
+- (IBAction)back:(id)sender;
 - (IBAction)addNewAddress:(id)sender;
+
+- (IBAction)toViewController:(id)sender;
+- (IBAction)toCartViewController:(id)sender;
+- (IBAction)toUserIndexViewController:(id)sender;
 
 @property (strong,nonatomic)NSMutableArray *addreInfo;
 @property (strong,nonatomic)NSDictionary *userDic;

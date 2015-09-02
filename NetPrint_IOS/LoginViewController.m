@@ -98,7 +98,7 @@
 
 - (void)addNotificationWithUserName:(NSString *)_uName password:(NSString *)_uPassword userId:(NSString *)_uId{
     [self dismissViewControllerAnimated:YES completion:^{
-        NSDictionary *userDic = [[NSDictionary alloc]initWithObjectsAndKeys:_uName,@"userName",_uId,@"userId",_uPassword ,@"password" ,nil];
+        NSDictionary *userDic = [[NSDictionary alloc]initWithObjectsAndKeys:_uName,@"userName",_uId,@"uId",_uPassword ,@"password" ,nil];
         [[NSNotificationCenter defaultCenter]postNotificationName:@"UserLoginCompletionNotification" object:nil userInfo:userDic];
     }];
 }

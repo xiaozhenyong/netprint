@@ -398,8 +398,7 @@
             NSString *freight = self.freightLabel.text;
             NSString *cheap = self.couponPriceLabel.text;
             NSString *totalprice = self.priceLabel.text;
-            
-            UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+  
             PayOrderViewController *payOrder = [storyboard instantiateViewControllerWithIdentifier:@"payOrderViewController"];
             payOrder.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
             

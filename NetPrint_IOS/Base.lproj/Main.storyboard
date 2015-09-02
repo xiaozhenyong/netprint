@@ -679,7 +679,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="SEA-iV-SQ7" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-1006.5" y="158.5"/>
+            <point key="canvasLocation" x="-1253.5" y="145.5"/>
         </scene>
         <!--Edit Pld View Controller-->
         <scene sceneID="5q1-2I-vjA">
@@ -1122,11 +1122,23 @@
                             <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="tCB-xN-w7r">
                                 <rect key="frame" x="5" y="594" width="370" height="44"/>
                                 <items>
-                                    <barButtonItem image="btn_home_nor" id="CQR-Ax-gxf"/>
+                                    <barButtonItem image="btn_home_nor" id="CQR-Ax-gxf">
+                                        <connections>
+                                            <action selector="toViewController:" destination="MTn-GY-Xob" id="GDL-c9-TTC"/>
+                                        </connections>
+                                    </barButtonItem>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="22w-mt-I6A"/>
-                                    <barButtonItem image="btn_cart_press" id="0dY-pA-Pyy"/>
+                                    <barButtonItem image="btn_cart_press" id="0dY-pA-Pyy">
+                                        <connections>
+                                            <action selector="toCartViewController:" destination="MTn-GY-Xob" id="qiY-iu-1QI"/>
+                                        </connections>
+                                    </barButtonItem>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="sdR-7f-jkb"/>
-                                    <barButtonItem image="btn_user_nor" id="NRM-rH-PvY"/>
+                                    <barButtonItem image="btn_user_nor" id="NRM-rH-PvY">
+                                        <connections>
+                                            <action selector="toUserIndexViewController:" destination="MTn-GY-Xob" id="KFx-Sq-Wam"/>
+                                        </connections>
+                                    </barButtonItem>
                                 </items>
                             </toolbar>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="首页" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="v8B-wT-hs8">
@@ -1222,7 +1234,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Byl-EB-LqG" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="140.5" y="178.5"/>
+            <point key="canvasLocation" x="-812.5" y="134.5"/>
         </scene>
         <!--Pay Finish View Controller-->
         <scene sceneID="OWg-Z9-d3s">
@@ -1423,9 +1435,17 @@
                             <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="n6J-72-e6p">
                                 <rect key="frame" x="0.0" y="594" width="375" height="44"/>
                                 <items>
-                                    <barButtonItem image="btn_home_nor" id="sIS-8q-IpO"/>
+                                    <barButtonItem image="btn_home_nor" id="sIS-8q-IpO">
+                                        <connections>
+                                            <action selector="toViewController:" destination="5de-cL-4X8" id="6D9-dy-VEw"/>
+                                        </connections>
+                                    </barButtonItem>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="uTN-gp-2sy"/>
-                                    <barButtonItem image="btn_cart_press" id="kPr-Jd-Leh"/>
+                                    <barButtonItem image="btn_cart_press" id="kPr-Jd-Leh">
+                                        <connections>
+                                            <action selector="toCartViewController:" destination="5de-cL-4X8" id="D4x-A6-TgY"/>
+                                        </connections>
+                                    </barButtonItem>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="oxq-Pj-aki"/>
                                     <barButtonItem image="btn_user_nor" id="bvA-zR-HRq"/>
                                 </items>
@@ -1448,7 +1468,7 @@
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="xiao11" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="eu0-pG-ArI">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="-" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="eu0-pG-ArI">
                                 <rect key="frame" x="100" y="233" width="174" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
@@ -1477,10 +1497,13 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina47"/>
+                    <connections>
+                        <outlet property="userNameLabel" destination="eu0-pG-ArI" id="nlp-ok-zaH"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="VNN-Uy-xd7" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="131.5" y="692.5"/>
+            <point key="canvasLocation" x="-682.5" y="134.5"/>
         </scene>
         <!--User Money View Controller-->
         <scene sceneID="0EG-nr-STK">
@@ -1556,7 +1579,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="amT-kK-nJU" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-117.5" y="729.5"/>
+            <point key="canvasLocation" x="-778.5" y="134.5"/>
         </scene>
         <!--Address Manage View Controller-->
         <scene sceneID="Ot4-kn-v46">
@@ -1602,11 +1625,23 @@
                             <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="eCu-BG-QVV">
                                 <rect key="frame" x="1" y="594" width="374" height="44"/>
                                 <items>
-                                    <barButtonItem image="btn_home_press" id="a5Q-Bo-q9T"/>
+                                    <barButtonItem image="btn_home_press" id="a5Q-Bo-q9T">
+                                        <connections>
+                                            <action selector="toViewController:" destination="CcU-Ey-A0j" id="ynf-14-CPq"/>
+                                        </connections>
+                                    </barButtonItem>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="wQs-rl-l7y"/>
-                                    <barButtonItem image="btn_cart_nor" id="eVm-Ld-B8H"/>
+                                    <barButtonItem image="btn_cart_nor" id="eVm-Ld-B8H">
+                                        <connections>
+                                            <action selector="toCartViewController:" destination="CcU-Ey-A0j" id="fWw-nu-pL1"/>
+                                        </connections>
+                                    </barButtonItem>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="SO5-K0-Q0V"/>
-                                    <barButtonItem image="btn_user_press" id="ODQ-am-f5Y"/>
+                                    <barButtonItem image="btn_user_press" id="ODQ-am-f5Y">
+                                        <connections>
+                                            <action selector="toUserIndexViewController:" destination="CcU-Ey-A0j" id="ehd-SQ-sZO"/>
+                                        </connections>
+                                    </barButtonItem>
                                 </items>
                             </toolbar>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="首页" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hyY-Yu-u6n">
@@ -1641,7 +1676,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="vEK-Ks-uyn" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-10.5" y="738.5"/>
+            <point key="canvasLocation" x="-749.5" y="134.5"/>
         </scene>
         <!--Add And Edit Address View Controller-->
         <scene sceneID="5lG-ag-j1N">
@@ -1746,7 +1781,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ScO-Cr-6SC" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="148.5" y="186.5"/>
+            <point key="canvasLocation" x="-901.5" y="134.5"/>
         </scene>
         <!--View Controller-->
         <scene sceneID="kZn-BE-d1C">
@@ -1992,7 +2027,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Bz3-96-Ou3" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-1056.5" y="850.5"/>
+            <point key="canvasLocation" x="-855.5" y="924.5"/>
         </scene>
         <!--Login View Controller-->
         <scene sceneID="3ah-fL-YBu">

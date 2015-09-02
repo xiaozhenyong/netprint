@@ -11,6 +11,8 @@
 
 @interface CartViewController (){
     NSString *userName,*password,*uId;
+    NSDictionary *userInfo;
+    UIStoryboard *storyboard;
 }
 
 @end
@@ -24,6 +26,9 @@
     [super viewDidLoad];
     
      _appDelegate = (AppDelegate *)[[UIApplication sharedApplication]delegate];
+    
+    storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    
     [self initCart];
     [self initTableView];
     
@@ -33,9 +38,10 @@
 - (void) getUserMsgWithNotification:(NSNotification *)notification{
     
     NSDictionary *dic = [notification userInfo];
+    userInfo = dic;
     userName = [dic valueForKey:@"userName"];
     password = [dic valueForKey:@"password"];
-    uId = [dic valueForKey:@"userId"];
+    uId = [dic valueForKey:@"uId"];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -183,7 +189,6 @@
 
 - (IBAction)settleButton:(id)sender {
     if (userName==nil && password == nil) {
-        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
         LoginViewController *login = [storyboard instantiateViewControllerWithIdentifier:@"loginViewController"];
         login.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
         [self presentViewController:login animated:YES completion:nil];
@@ -234,7 +239,6 @@
             id jsonValue = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
             NSDictionary *mdi = [NSDictionary dictionaryWithObjectsAndKeys:jsonValue,@"value", nil];
             
-            UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
             DistributionMsgViewController *dis = [storyboard instantiateViewControllerWithIdentifier:@"distributionMsgViewController"];
             
             dis.mdi = mdi;
@@ -252,8 +256,21 @@
 }
 
 - (IBAction)toViewController:(id)sender {
+    ViewController *viewCon = [storyboard instantiateViewControllerWithIdentifier:@"viewController"];
+    [self presentViewController:viewCon animated:YES completion:^{
+        if (userInfo) {
+            [[NSNotificationCenter defaultCenter]postNotificationName:@"userInfo" object:nil userInfo:userInfo];
+        }
+    }];
+    
 }
 
 - (IBAction)toUserIndexViewController:(id)sender {
+    UserIndexViewController *userIndexViewCon = [storyboard instantiateViewControllerWithIdentifier:@"userIndexViewController"];
+    [self presentViewController:userIndexViewCon animated:YES completion:^{
+        if (userInfo) {
+            [[NSNotificationCenter defaultCenter]postNotificationName:@"userInfo" object:nil userInfo:userInfo];
+        }
+    }];
 }
 @end
