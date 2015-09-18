@@ -57,6 +57,36 @@
 */
 
 - (IBAction)userOrder:(id)sender {
+    if (userInfo == nil) {
+        LoginViewController *loginViewCon = [storyboard instantiateViewControllerWithIdentifier:@"loginViewController"];
+        [self presentViewController:loginViewCon animated:YES completion:nil];
+    }else{
+        NSDictionary *requestDic = [[NSDictionary alloc]initWithObjectsAndKeys:self.userName,@"userName",self.password,@"pwd",@"0",@"type",@"1",@"page", nil];
+        
+        
+        AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+        [manager POST:PHONE_MEMBER_ORDERS parameters:requestDic success:^(AFHTTPRequestOperation *operation, id responseObject) {
+            
+            NSDictionary *responseValue = responseObject;
+            NSString *res = [responseValue valueForKey:@"res"];
+            if ([res isEqualToString:@"success"]) {
+                NSArray *info = [responseValue valueForKey:@"info"];
+                NSString *ordersValue = [responseValue valueForKey:@"info"];
+                NSLog(@"info------->%@",ordersValue);
+                UserOrdersViewController *userOrdersView = [storyboard instantiateViewControllerWithIdentifier:@"userOrdersViewController"];
+                userOrdersView.ordersArray = [info mutableCopy];
+                userOrdersView.userInfo = userInfo;
+                [self presentViewController:userOrdersView animated:YES completion:nil];
+                
+            }else{
+                NSLog(@"Server  is Error");
+            }
+            
+        } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+            NSLog(@"UserOrder Error------->%@",error);
+        }];
+        
+    }
 }
 
 - (IBAction)userMoney:(id)sender {

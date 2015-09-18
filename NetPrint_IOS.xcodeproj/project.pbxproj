@@ -49,6 +49,7 @@
 		17596D731B3D2999001D26FD /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 17596D721B3D2999001D26FD /* CoreData.framework */; };
 		17596D771B3D2B7F001D26FD /* iosprint.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 17596D751B3D2B7F001D26FD /* iosprint.xcdatamodeld */; };
 		17596D7D1B3D2EFC001D26FD /* PhotoTexture.m in Sources */ = {isa = PBXBuildFile; fileRef = 17596D7C1B3D2EFC001D26FD /* PhotoTexture.m */; };
+		1763105B1B9D735100B73F68 /* UserOrdersViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1763105A1B9D735100B73F68 /* UserOrdersViewController.m */; };
 		1774E0781B326E300051087D /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 1774E0771B326E300051087D /* main.m */; };
 		1774E07B1B326E300051087D /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1774E07A1B326E300051087D /* AppDelegate.m */; };
 		1774E07E1B326E300051087D /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1774E07D1B326E300051087D /* ViewController.m */; };
@@ -56,6 +57,8 @@
 		1774E0831B326E300051087D /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1774E0821B326E300051087D /* Images.xcassets */; };
 		1774E0861B326E300051087D /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1774E0841B326E300051087D /* LaunchScreen.xib */; };
 		1774E0921B326E300051087D /* NetPrint_IOSTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1774E0911B326E300051087D /* NetPrint_IOSTests.m */; };
+		177BCE821BA2BA8F002498BB /* UserOrdersTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 177BCE801BA2BA8F002498BB /* UserOrdersTableViewCell.m */; };
+		177BCE831BA2BA8F002498BB /* UserOrdersTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 177BCE811BA2BA8F002498BB /* UserOrdersTableViewCell.xib */; };
 		17D1064E1B3951670012FEDE /* PhotoShowViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 17D1064D1B3951670012FEDE /* PhotoShowViewController.m */; };
 		564B636A689A8DA3472A8C09 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F657D3AD356499F75C2A2BCF /* libPods.a */; };
 /* End PBXBuildFile section */
@@ -142,6 +145,8 @@
 		17596D761B3D2B7F001D26FD /* iosprint.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = iosprint.xcdatamodel; sourceTree = "<group>"; };
 		17596D7B1B3D2EFC001D26FD /* PhotoTexture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotoTexture.h; sourceTree = "<group>"; };
 		17596D7C1B3D2EFC001D26FD /* PhotoTexture.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotoTexture.m; sourceTree = "<group>"; };
+		176310591B9D735100B73F68 /* UserOrdersViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserOrdersViewController.h; sourceTree = "<group>"; };
+		1763105A1B9D735100B73F68 /* UserOrdersViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserOrdersViewController.m; sourceTree = "<group>"; };
 		1774E0721B326E300051087D /* NetPrint_IOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NetPrint_IOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1774E0761B326E300051087D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1774E0771B326E300051087D /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -155,6 +160,9 @@
 		1774E08B1B326E300051087D /* NetPrint_IOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NetPrint_IOSTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		1774E0901B326E300051087D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1774E0911B326E300051087D /* NetPrint_IOSTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NetPrint_IOSTests.m; sourceTree = "<group>"; };
+		177BCE7F1BA2BA8F002498BB /* UserOrdersTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserOrdersTableViewCell.h; sourceTree = "<group>"; };
+		177BCE801BA2BA8F002498BB /* UserOrdersTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserOrdersTableViewCell.m; sourceTree = "<group>"; };
+		177BCE811BA2BA8F002498BB /* UserOrdersTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = UserOrdersTableViewCell.xib; sourceTree = "<group>"; };
 		17D1064C1B3951670012FEDE /* PhotoShowViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotoShowViewController.h; sourceTree = "<group>"; };
 		17D1064D1B3951670012FEDE /* PhotoShowViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotoShowViewController.m; sourceTree = "<group>"; };
 		8558662724ADC13EC47B327E /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
@@ -216,6 +224,8 @@
 				1730E9FA1B6F17CB00E00976 /* EditPhotoViewController.m */,
 				173329341B7AE8860088C138 /* EditPldViewController.h */,
 				173329351B7AE8860088C138 /* EditPldViewController.m */,
+				176310591B9D735100B73F68 /* UserOrdersViewController.h */,
+				1763105A1B9D735100B73F68 /* UserOrdersViewController.m */,
 			);
 			name = pagecon;
 			sourceTree = "<group>";
@@ -267,6 +277,9 @@
 				173DB6081B86CB3600B5062B /* PldInCollectionView.h */,
 				173DB6091B86CB3600B5062B /* PldInCollectionView.m */,
 				173DB60B1B86CB7200B5062B /* ViewForPldShow.xib */,
+				177BCE7F1BA2BA8F002498BB /* UserOrdersTableViewCell.h */,
+				177BCE801BA2BA8F002498BB /* UserOrdersTableViewCell.m */,
+				177BCE811BA2BA8F002498BB /* UserOrdersTableViewCell.xib */,
 			);
 			name = control;
 			sourceTree = "<group>";
@@ -474,6 +487,7 @@
 				1734B7641B4BBB0A00F6FCD7 /* CartTableViewCell.xib in Resources */,
 				1739F02A1B6B6FC900A44ADB /* SelPhotoShowCollectionViewCell.xib in Resources */,
 				17333A601B61D1D200C83093 /* PayOrderShowTableViewCell.xib in Resources */,
+				177BCE831BA2BA8F002498BB /* UserOrdersTableViewCell.xib in Resources */,
 				173329461B7B1A510088C138 /* pld_6c.png in Resources */,
 				1733B0CA1B538F2E00E15031 /* area.plist in Resources */,
 				173DB60C1B86CB7200B5062B /* ViewForPldShow.xib in Resources */,
@@ -543,6 +557,7 @@
 				17596D7D1B3D2EFC001D26FD /* PhotoTexture.m in Sources */,
 				1774E07B1B326E300051087D /* AppDelegate.m in Sources */,
 				17596D771B3D2B7F001D26FD /* iosprint.xcdatamodeld in Sources */,
+				177BCE821BA2BA8F002498BB /* UserOrdersTableViewCell.m in Sources */,
 				17333A5F1B61D1D200C83093 /* PayOrderShowTableViewCell.m in Sources */,
 				1753BE4E1B3A9A840066566D /* RadioButton.m in Sources */,
 				1753BE441B3A51000066566D /* NSNumber+Message.m in Sources */,
@@ -558,6 +573,7 @@
 				17315D1D1B578B620017AC1E /* Cart.m in Sources */,
 				1736445D1B4E07C00004ECE3 /* LoginViewController.m in Sources */,
 				173701F31B4A557F001F85D4 /* Goods.m in Sources */,
+				1763105B1B9D735100B73F68 /* UserOrdersViewController.m in Sources */,
 				170A1CE51B427FF80084EE57 /* PhotoImageView.m in Sources */,
 				17333A631B621E7200C83093 /* PayFinishViewController.m in Sources */,
 				17D1064E1B3951670012FEDE /* PhotoShowViewController.m in Sources */,

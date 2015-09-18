@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "AFNetworking.h"
 #import "DefineData.h"
 #import "NSString+URLEncoding.h"
 #import "NSNumber+Message.h"
@@ -15,6 +16,7 @@
 #import "AddressManageViewController.h"
 #import "ViewController.h"
 #import "CartViewController.h"
+#import "UserOrdersViewController.h"
 
 @interface UserIndexViewController : UIViewController
 

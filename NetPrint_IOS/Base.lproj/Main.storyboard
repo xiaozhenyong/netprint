@@ -280,7 +280,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="3h1-Lw-0Uo" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-1159.5" y="134.5"/>
+            <point key="canvasLocation" x="-1347.5" y="145.5"/>
         </scene>
         <!--Photo Show View Controller-->
         <scene sceneID="rvq-2C-UkK">
@@ -401,7 +401,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="HyV-QK-Xd2" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-1231.5" y="150.5"/>
+            <point key="canvasLocation" x="-1409.5" y="165.5"/>
         </scene>
         <!--Edit Photo View Controller-->
         <scene sceneID="Uqv-6Y-uSy">
@@ -544,7 +544,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="asn-lK-5yj" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-1170.5" y="158.5"/>
+            <point key="canvasLocation" x="-1507.5" y="158.5"/>
         </scene>
         <!--Cart View Controller-->
         <scene sceneID="xtn-v9-eP6">
@@ -679,7 +679,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="SEA-iV-SQ7" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-1253.5" y="145.5"/>
+            <point key="canvasLocation" x="-1550.5" y="165.5"/>
         </scene>
         <!--Edit Pld View Controller-->
         <scene sceneID="5q1-2I-vjA">
@@ -788,7 +788,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="SUw-wO-XSI" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-1195.5" y="171.5"/>
+            <point key="canvasLocation" x="-1409.5" y="171.5"/>
         </scene>
         <!--Distribution Msg View Controller-->
         <scene sceneID="Zck-JP-Hz6">
@@ -1045,7 +1045,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="h47-J2-HUG" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-1222.5" y="158.5"/>
+            <point key="canvasLocation" x="-1477.5" y="158.5"/>
         </scene>
         <!--Pay Order View Controller-->
         <scene sceneID="VXa-Zq-QCy">
@@ -1234,7 +1234,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Byl-EB-LqG" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-812.5" y="134.5"/>
+            <point key="canvasLocation" x="-409.5" y="124.5"/>
         </scene>
         <!--Pay Finish View Controller-->
         <scene sceneID="OWg-Z9-d3s">
@@ -1312,7 +1312,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="0HR-Yx-AV4" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-1290.5" y="158.5"/>
+            <point key="canvasLocation" x="-1484.5" y="165.5"/>
         </scene>
         <!--User Index View Controller-->
         <scene sceneID="6Ai-fU-trX">
@@ -1345,9 +1345,6 @@
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <userDefinedRuntimeAttributes>
-                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.borderWidth">
-                                        <real key="value" value="0.29999999999999999"/>
-                                    </userDefinedRuntimeAttribute>
                                     <userDefinedRuntimeAttribute type="color" keyPath="layer.borderColor">
                                         <color key="value" white="0.90000000000000002" alpha="1" colorSpace="calibratedWhite"/>
                                     </userDefinedRuntimeAttribute>
@@ -1364,9 +1361,6 @@
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <userDefinedRuntimeAttributes>
-                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.borderWidth">
-                                        <real key="value" value="0.29999999999999999"/>
-                                    </userDefinedRuntimeAttribute>
                                     <userDefinedRuntimeAttribute type="color" keyPath="layer.borderColor">
                                         <color key="value" white="0.90000000000000002" alpha="1" colorSpace="calibratedWhite"/>
                                     </userDefinedRuntimeAttribute>
@@ -1383,9 +1377,6 @@
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <userDefinedRuntimeAttributes>
-                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.borderWidth">
-                                        <real key="value" value="0.29999999999999999"/>
-                                    </userDefinedRuntimeAttribute>
                                     <userDefinedRuntimeAttribute type="color" keyPath="layer.borderColor">
                                         <color key="value" white="0.90000000000000002" alpha="1" colorSpace="calibratedWhite"/>
                                     </userDefinedRuntimeAttribute>
@@ -1402,9 +1393,6 @@
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <userDefinedRuntimeAttributes>
-                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.borderWidth">
-                                        <real key="value" value="0.29999999999999999"/>
-                                    </userDefinedRuntimeAttribute>
                                     <userDefinedRuntimeAttribute type="color" keyPath="layer.borderColor">
                                         <color key="value" white="0.90000000000000002" alpha="1" colorSpace="calibratedWhite"/>
                                     </userDefinedRuntimeAttribute>
@@ -1421,9 +1409,6 @@
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <userDefinedRuntimeAttributes>
-                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.borderWidth">
-                                        <real key="value" value="0.29999999999999999"/>
-                                    </userDefinedRuntimeAttribute>
                                     <userDefinedRuntimeAttribute type="color" keyPath="layer.borderColor">
                                         <color key="value" white="0.90000000000000002" alpha="1" colorSpace="calibratedWhite"/>
                                     </userDefinedRuntimeAttribute>
@@ -1482,9 +1467,6 @@
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <userDefinedRuntimeAttributes>
-                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.borderWidth">
-                                        <real key="value" value="0.29999999999999999"/>
-                                    </userDefinedRuntimeAttribute>
                                     <userDefinedRuntimeAttribute type="color" keyPath="keyPath">
                                         <color key="value" white="0.90000000000000002" alpha="1" colorSpace="calibratedWhite"/>
                                     </userDefinedRuntimeAttribute>
@@ -1503,7 +1485,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="VNN-Uy-xd7" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-682.5" y="134.5"/>
+            <point key="canvasLocation" x="-441.5" y="119.5"/>
         </scene>
         <!--User Money View Controller-->
         <scene sceneID="0EG-nr-STK">
@@ -1579,7 +1561,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="amT-kK-nJU" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-778.5" y="134.5"/>
+            <point key="canvasLocation" x="-605.5" y="110.5"/>
         </scene>
         <!--Address Manage View Controller-->
         <scene sceneID="Ot4-kn-v46">
@@ -1676,7 +1658,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="vEK-Ks-uyn" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-749.5" y="134.5"/>
+            <point key="canvasLocation" x="-435.5" y="92.5"/>
         </scene>
         <!--Add And Edit Address View Controller-->
         <scene sceneID="5lG-ag-j1N">
@@ -1781,12 +1763,12 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ScO-Cr-6SC" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-901.5" y="134.5"/>
+            <point key="canvasLocation" x="-506.5" y="110.5"/>
         </scene>
-        <!--View Controller-->
+        <!--User Orders View Controller-->
         <scene sceneID="kZn-BE-d1C">
             <objects>
-                <viewController id="2yw-YS-vyy" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="userOrdersViewController" id="2yw-YS-vyy" customClass="UserOrdersViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="mvE-tj-GaY"/>
                         <viewControllerLayoutGuide type="bottom" id="DWh-Fx-5XD"/>
@@ -1804,48 +1786,60 @@
                                     </navigationItem>
                                 </items>
                             </navigationBar>
-                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Xgk-Ah-AJx">
-                                <rect key="frame" x="2" y="117" width="373" height="550"/>
-                                <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                            </view>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="s0d-TK-sli">
+                                <rect key="frame" x="-1" y="116" width="376" height="550"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            </tableView>
                             <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="po1-Te-hmN">
-                                <rect key="frame" x="0.0" y="72" width="375" height="42"/>
+                                <rect key="frame" x="0.0" y="68" width="375" height="42"/>
                                 <subviews>
-                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rDz-gA-bVs">
-                                        <rect key="frame" x="15" y="4" width="60" height="30"/>
-                                        <state key="normal" title="全部订单">
-                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                        </state>
-                                    </button>
                                     <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vUz-2H-CE0">
-                                        <rect key="frame" x="213" y="4" width="45" height="30"/>
+                                        <rect key="frame" x="213" y="6" width="45" height="30"/>
                                         <state key="normal" title="待收货">
+                                            <color key="titleColor" cocoaTouchSystemColor="darkTextColor"/>
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Fxe-FW-l7P">
-                                        <rect key="frame" x="310" y="4" width="45" height="30"/>
+                                        <rect key="frame" x="310" y="5" width="45" height="30"/>
                                         <state key="normal" title="已完成">
+                                            <color key="titleColor" cocoaTouchSystemColor="darkTextColor"/>
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="N0Y-ns-Dbq">
-                                        <rect key="frame" x="123" y="4" width="45" height="30"/>
+                                        <rect key="frame" x="123" y="6" width="45" height="30"/>
                                         <state key="normal" title="待付款">
+                                            <color key="titleColor" cocoaTouchSystemColor="darkTextColor"/>
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
                                     </button>
+                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rDz-gA-bVs">
+                                        <rect key="frame" x="15" y="6" width="60" height="30"/>
+                                        <color key="backgroundColor" red="1" green="0.408927604" blue="0.39320815949999999" alpha="1" colorSpace="calibratedRGB"/>
+                                        <state key="normal" title="全部订单">
+                                            <color key="titleColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <color key="titleShadowColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                    </button>
                                 </subviews>
-                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina47"/>
+                    <connections>
+                        <outlet property="allOrdersBtn" destination="rDz-gA-bVs" id="rro-ld-6Xe"/>
+                        <outlet property="finishOrdersBtn" destination="Fxe-FW-l7P" id="uvG-hW-m0v"/>
+                        <outlet property="ordersTableView" destination="s0d-TK-sli" id="APQ-8g-boO"/>
+                        <outlet property="waitAcceptOrdersBtn" destination="vUz-2H-CE0" id="Pp2-x6-39f"/>
+                        <outlet property="waitPayOrdersBtn" destination="N0Y-ns-Dbq" id="1VM-xm-4JG"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="KEY-hh-mhe" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="148.5" y="670.5"/>
+            <point key="canvasLocation" x="-883.5" y="941.5"/>
         </scene>
         <!--Register View Controller-->
         <scene sceneID="gm0-mh-tff">
@@ -1929,7 +1923,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="UZg-qf-ozR" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="238.5" y="186.5"/>
+            <point key="canvasLocation" x="-1762.5" y="946.5"/>
         </scene>
         <!--View Controller-->
         <scene sceneID="oTv-K6-9pu">
@@ -2027,7 +2021,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Bz3-96-Ou3" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-855.5" y="924.5"/>
+            <point key="canvasLocation" x="-1670.5" y="946.5"/>
         </scene>
         <!--Login View Controller-->
         <scene sceneID="3ah-fL-YBu">
@@ -2110,7 +2104,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="I6P-J2-YEF" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-1135.5" y="145.5"/>
+            <point key="canvasLocation" x="-1380.5" y="145.5"/>
         </scene>
         <!--View Controller-->
         <scene sceneID="3T4-w3-hN0">
@@ -2130,7 +2124,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="0un-qg-yv8" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-819" y="943"/>
+            <point key="canvasLocation" x="-1684" y="906"/>
         </scene>
     </scenes>
     <resources>
