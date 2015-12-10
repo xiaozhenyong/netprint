@@ -8,12 +8,13 @@
 
 #import <UIKit/UIKit.h>
 #import "DefineData.h"
+#import "BaseView.h"
 #import "NSString+URLEncoding.h"
 #import "AppDelegate.h"
 #import "Goods.h"
 #import "PhotoSize.h"
 #import "PhotoTexture.h"
-#import "Goods.h"
+
 
 @interface BeginPrintViewController : UIViewController<UIPickerViewDataSource,UIPickerViewDelegate,UITextFieldDelegate>
 
@@ -53,7 +54,5 @@
 
 @property (nonatomic,copy)NSMutableArray *assets;
 
-
-- (void) startRequest;
 
 @end

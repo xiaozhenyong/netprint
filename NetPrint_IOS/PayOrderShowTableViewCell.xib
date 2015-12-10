@@ -38,6 +38,7 @@
                 <outlet property="goodsNumLabel" destination="kkS-N5-gMS" id="iiN-fS-paG"/>
                 <outlet property="priceLabel" destination="XvM-0H-VlZ" id="tZj-QP-QXL"/>
             </connections>
+            <point key="canvasLocation" x="84" y="333"/>
         </tableViewCell>
     </objects>
 </document>

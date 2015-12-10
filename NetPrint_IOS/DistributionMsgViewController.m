@@ -11,12 +11,24 @@
 @interface DistributionMsgViewController (){
     NSArray *dlsPickerViewData;
     NSDictionary *all,*mdiDic;
-    NSString *dlsId,*dlsCostPrice,*dlsDtName,*userName,*password,*allPrice,*delId,*uId,*code;
+    NSString *dlsId,
+             *dlsCostPrice,//运费
+             *dlsDtName,
+             *userName,
+             *password,
+             *allPrice,
+             *delId,
+             *uId,
+             *code,
+             *gprice,//商品总额
+             *cheappice,//优惠
+             *newAllPrice;
     NSMutableData *responseData;
     __block NSMutableDictionary *imgMsg;
-    NSDictionary *uInfo;
+//    NSDictionary *uInfo;
     UIStoryboard *storyboard;
 
+    UIAlertView *alertView;
 }
 
 @end
@@ -29,27 +41,28 @@
     [self initPage];
     [self initPickerView];
     [self initPickerViewData];
+    [self initUserInfo];
+    [self initAlertView];
     
     storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-    
-    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(getUserMsgWithNotification:) name:@"UserLoginNoti" object:nil];
     
     [self.couponTextField addTarget:self action:@selector(clearCouponTextField) forControlEvents:UIControlEventTouchDown];
     
 }
 
-- (void) clearCouponTextField{
-    self.couponTextField.text = @"";
+- (void)initAlertView{
+    alertView = [[UIAlertView alloc]initWithTitle:@"" message:@"正在上传图片:0" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil];
 }
 
-- (void) getUserMsgWithNotification:(NSNotification *)notification{
-    
-    NSDictionary *dic = [notification userInfo];
-    uInfo = dic;
-    userName = [dic valueForKey:@"userName"];
-    password = [dic valueForKey:@"password"];
-    uId = [dic valueForKey:@"uId"];
-    
+- (void)initUserInfo{
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    userName = [userDefaults valueForKey:@"userName"];
+    password = [userDefaults valueForKey:@"password"];
+    uId = [userDefaults valueForKey:@"uId"];
+}
+
+- (void) clearCouponTextField{
+    self.couponTextField.text = @"";
 }
 
 - (void)initPickerView{
@@ -77,27 +90,26 @@
     dlsId = [NSString stringWithFormat:@"%@",[dlsDic valueForKey:@"id"]];
     
     dlsCostPrice = [NSString stringWithFormat:@"%@",[[[all valueForKey:@"dls"]objectAtIndex:0] valueForKey:@"costprice"] ];
+    gprice = [NSString stringWithFormat:@"%@",[all valueForKey:@"totalGoodsPrice"]];
+    cheappice = [NSString stringWithFormat:@"%@",[all valueForKey:@"cheap"]];
+    
     
     self.addressLabel.text = [NSString stringWithFormat:@"%@%@%@%@",[mdiDic valueForKey:@"provinceName"],[mdiDic valueForKey:@"cityName"],[mdiDic valueForKey:@"countyName"],[mdiDic valueForKey:@"address"]];
+    
     self.deliveryManLabel.text = [mdiDic valueForKey:@"deliveryMan"];
     self.phoneLabel.text = [mdiDic valueForKey:@"mobilePhone"];
-    self.goodsPriceLabel.text = [NSString stringWithFormat:@"%@",[all valueForKey:@"totalGoodsPrice"]];
-    self.couponPriceLabel.text = [NSString stringWithFormat:@"%@",[all valueForKey:@"cheap"]];
     
+    self.goodsPriceLabel.text = gprice;
+    self.couponPriceLabel.text = cheappice;
     self.freightLabel.text = dlsCostPrice;
-    
-    
-    NSString *gprice = [NSString stringWithFormat:@"%@",[all valueForKey:@"totalGoodsPrice"]];
-    
-    
-    NSString *cheappice = [NSString stringWithFormat:@"%@",[all valueForKey:@"cheap"]];
-    
+  
     NSDecimalNumber *_gprice = [NSDecimalNumber decimalNumberWithString:gprice];
     NSDecimalNumber *_cheappice = [NSDecimalNumber decimalNumberWithString:cheappice];
     NSDecimalNumber *_costPrice = [NSDecimalNumber decimalNumberWithString:dlsCostPrice];
     
     allPrice = [[[_gprice decimalNumberByAdding:_cheappice]decimalNumberByAdding:_costPrice] stringValue];
     self.priceLabel.text = allPrice;
+    newAllPrice = allPrice;
     
 }
 
@@ -130,14 +142,14 @@
     self.distributionMethodTextField.text = dlsDtName;
     
     
-    NSString *frei = [NSString stringWithFormat:@"%@",[dlsDic valueForKey:@"costprice"]];
-    NSString *gprice = [NSString stringWithFormat:@"%@",[all valueForKey:@"totalGoodsPrice"]];
-    NSString *cheap = [NSString stringWithFormat:@"%@",[all valueForKey:@"cheap"]];
+ //   NSString *frei = [NSString stringWithFormat:@"%@",[dlsDic valueForKey:@"costprice"]];
+//    NSString *gprice = [NSString stringWithFormat:@"%@",[all valueForKey:@"totalGoodsPrice"]];
+//    NSString *cheap = [NSString stringWithFormat:@"%@",[all valueForKey:@"cheap"]];
     
     
-    NSDecimalNumber *_frei = [NSDecimalNumber decimalNumberWithString:frei];
+    NSDecimalNumber *_frei = [NSDecimalNumber decimalNumberWithString:dlsCostPrice];
     NSDecimalNumber *_gprice = [NSDecimalNumber decimalNumberWithString:gprice];
-    NSDecimalNumber *_cheap = [NSDecimalNumber decimalNumberWithString:cheap];
+    NSDecimalNumber *_cheap = [NSDecimalNumber decimalNumberWithString:cheappice];
     
     NSDecimalNumber *_allprice = [[_frei decimalNumberByAdding:_gprice]decimalNumberBySubtracting:_cheap];
     allPrice = [_allprice stringValue];
@@ -163,13 +175,16 @@
 
 - (IBAction)addrManageButton:(id)sender {
     AddressManageViewController *addressManage = [storyboard instantiateViewControllerWithIdentifier:@"addressManageViewController"];
-    addressManage.userDic = [NSDictionary dictionaryWithObjectsAndKeys:userName,@"u",password,@"p", nil];
+//    addressManage.userDic = [NSDictionary dictionaryWithObjectsAndKeys:userName,@"u",password,@"p", nil];
     addressManage.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
     [self presentViewController:addressManage animated:YES completion:nil];
 }
 
 - (IBAction)useCouponButton:(id)sender {
     NSString *coupon = self.couponTextField.text;
+    if ([@"输入优惠码" isEqualToString:coupon]) {
+        coupon = @"";
+    }
     code = coupon;
     NSMutableArray *cartsArray = [[NSMutableArray alloc]init];
     
@@ -208,27 +223,27 @@
         
         AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
         [manager POST:PHONE_ORDER_SETTLE parameters:requestDic success:^(AFHTTPRequestOperation *operation, id responseObject) {
-            
-            NSLog(@"response------>%@",responseObject);
-            
+
             NSDictionary *resDic = responseObject;
             NSString *cheapValue = [NSString stringWithFormat:@"%@",[resDic valueForKey:@"cheap"]];
             
             NSDecimalNumber *_cheap = [NSDecimalNumber decimalNumberWithString:cheapValue];
             
             self.couponPriceLabel.text = cheapValue;
+            cheappice = cheapValue;
             
             NSDecimalNumber *_totalPrice = [NSDecimalNumber decimalNumberWithString:allPrice];
             NSDecimalNumber *newTotal = [_totalPrice decimalNumberBySubtracting:_cheap];
             self.priceLabel.text = [newTotal stringValue];
-            allPrice = [newTotal stringValue];
-            
-            NSLog(@"allprice------->%@",allPrice);
+            newAllPrice = [newTotal stringValue];
+
         } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-            
+            UIAlertView *bAlertView = [BaseView alertViewNoDelegateWithTitle:@"提示" msg:@"服务不可用" cancel:@"确定" other:nil];
+            [bAlertView show];
         }];
     }else{
-        
+        UIAlertView *bAlertView = [BaseView alertViewNoDelegateWithTitle:@"" msg:@"请填写优惠码" cancel:@"确定" other:nil];
+        [bAlertView show];
     }
 }
 
@@ -244,35 +259,32 @@
 }
 
 - (IBAction)back:(id)sender {
-    [self dismissViewControllerAnimated:YES completion:^{
-        [[NSNotificationCenter defaultCenter]postNotificationName:@"userInfo" object:nil userInfo:uInfo];
-    }];
-
+    [self dismissViewControllerAnimated:YES completion:nil];
+    
 }
 
 - (IBAction)toViewController:(id)sender {
     ViewController *viewCon = [storyboard instantiateViewControllerWithIdentifier:@"viewController"];
-    [self presentViewController:viewCon animated:YES completion:^{
-        [[NSNotificationCenter defaultCenter]postNotificationName:@"userInfo" object:nil userInfo:uInfo];
-    }];
+    [self presentViewController:viewCon animated:YES completion:nil];
+    
 }
 
 - (IBAction)toCartViewController:(id)sender {
     CartViewController *cartViewCon = [storyboard instantiateViewControllerWithIdentifier:@"cartViewController"];
-    [self presentViewController:cartViewCon animated:YES completion:^{
-        [[NSNotificationCenter defaultCenter]postNotificationName:@"userInfo" object:nil userInfo:uInfo];
-    }];
+    [self presentViewController:cartViewCon animated:YES completion:nil];
+    
 }
 
 - (IBAction)toUserIndexViewController:(id)sender {
     UserIndexViewController *userIndexViewCon = [storyboard instantiateViewControllerWithIdentifier:@"userIndexViewController"];
-    [self presentViewController:userIndexViewCon animated:YES completion:^{
-        [[NSNotificationCenter defaultCenter]postNotificationName:@"userInfo" object:nil userInfo:uInfo];
-    }];
+    [self presentViewController:userIndexViewCon animated:YES completion:nil];
+    
 }
 
 - (void) uploadImageNew{
 
+    [alertView show];
+    
     __block NSInteger i=0;
     NSInteger count = [self countNum];
     imgMsg = [[NSMutableDictionary alloc]init];
@@ -287,8 +299,6 @@
         NSArray *arrayImage = [NSKeyedUnarchiver unarchiveObjectWithData:cart.detail];
         
         for (NSDictionary *dicAsset in arrayImage) {
-            
-            NSLog(@"set------>%@",[dicAsset valueForKey:@"set"]);
             
             [dataDic setValue:[dicAsset valueForKey:@"set"] forKey:@"set"];
             
@@ -335,13 +345,18 @@
                     
                     [imgMsg setValue:[NSNumber numberWithInteger:imgId] forKey:[NSString stringWithFormat:@"%@",[assetUrl absoluteString]]];
                     i++;
+                    
+                    [alertView setMessage:[NSString stringWithFormat:@"正在上传图片:%ld",i]];
+                    
                     if (i == count) {
                         [self orderSubmit];
                     }
                     
                     
                 } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-                    NSLog(@"uploadError: %@",error);
+                    //NSLog(@"uploadError: %@",error);
+                    UIAlertView *bAlertView = [BaseView alertViewNoDelegateWithTitle:@"" msg:@"服务不可用" cancel:@"确定" other:nil];
+                    [bAlertView show];
                 }];
                 
             } failureBlock:nil];
@@ -363,6 +378,9 @@
 
 
 - (void) orderSubmit{
+    
+    [alertView setMessage:@"正在提交订单"];
+    
     NSMutableDictionary *cartDic = [[NSMutableDictionary alloc]init];
     
     for (Cart *cart in self.cartArray) {
@@ -381,6 +399,8 @@
     NSData *jsonData = [NSJSONSerialization dataWithJSONObject:cartDic options:0 error:nil];
     NSString *jsonString = [[NSString alloc]initWithData:jsonData encoding:NSUTF8StringEncoding];
     
+    NSLog(@"code------>%@",code);
+    
     AFHTTPRequestOperationManager *orderManager = [AFHTTPRequestOperationManager manager];
     NSMutableDictionary *dicPost = [[NSMutableDictionary alloc]init];
     [dicPost setValue:userName forKey:@"userName"];
@@ -394,30 +414,64 @@
         if ([@"ok" isEqualToString:[responseValue valueForKey:@"res"]]) {
             NSString *orderId = [responseValue valueForKey:@"orderId"];
             
+            NSLog(@"orderid------>%@",orderId);
+            
+            /*
             NSString *goodsPrice = self.goodsPriceLabel.text;
             NSString *freight = self.freightLabel.text;
             NSString *cheap = self.couponPriceLabel.text;
             NSString *totalprice = self.priceLabel.text;
-  
+            */
+            
+            [self hiddenAlertView];
+            
             PayOrderViewController *payOrder = [storyboard instantiateViewControllerWithIdentifier:@"payOrderViewController"];
             payOrder.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
             
             payOrder.cartArray = self.cartArray;
             
             [self presentViewController:payOrder animated:YES completion:^{
-                NSDictionary *payOrderDic = [[NSDictionary alloc]initWithObjectsAndKeys:userName,@"userName",password,@"password",uId,@"uId",orderId,@"orderId",goodsPrice,@"goodsPrice",freight,@"freight",cheap,@"cheap",totalprice,@"totale", nil];
-                [[NSNotificationCenter defaultCenter]postNotificationName:@"payOrderNoti" object:nil userInfo:payOrderDic];
                 
+                NSDictionary *detailDic = [[NSDictionary alloc]initWithObjectsAndKeys:jsonString,@"detail",orderId,@"orderId", nil];
+                
+                
+                [orderManager POST:PHONE_ORDER_DETAIL parameters:detailDic success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                    
+                    NSDictionary *orderDetailDic = [[NSDictionary alloc]init];
+                    orderDetailDic = responseObject;
+                    
+                    NSDictionary *payOrderDic = [[NSDictionary alloc]initWithObjectsAndKeys:
+                                                 userName,@"userName",
+                                                 password,@"password",
+                                                 uId,@"uId",
+                                                 orderId,@"orderId",
+                                                 gprice,@"goodsPrice",
+                                                 dlsCostPrice,@"freight",
+                                                 cheappice,@"cheap",
+                                                 newAllPrice,@"totale",
+                                                 orderDetailDic,@"orderDetail", nil];
+                    [[NSNotificationCenter defaultCenter]postNotificationName:@"payOrderNoti" object:nil userInfo:payOrderDic];
+                } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                    //NSLog(@"订单明细请求错误");
+                    UIAlertView *bAlertView = [BaseView alertViewNoDelegateWithTitle:@"" msg:@"服务不可用" cancel:@"确定" other:nil];
+                    [bAlertView show];
+                }];
             }];
-            
         }else{
-            NSLog(@"---sumbit order  fail---");
+            UIAlertView *bAlertView = [BaseView alertViewNoDelegateWithTitle:@"" msg:@"订单提交出错" cancel:@"确定" other:nil];
+            [bAlertView show];
         }
         
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        NSLog(@"OrderSubmitError: %@",error);
+        //NSLog(@"OrderSubmitError: %@",error);
+        UIAlertView *bAlertView = [BaseView alertViewNoDelegateWithTitle:@"" msg:@"服务不可用" cancel:@"确定" other:nil];
+        [bAlertView show];
     }];
 
+}
+
+- (void)hiddenAlertView{
+    [alertView dismissWithClickedButtonIndex:0 animated:NO];
 }
 
 @end

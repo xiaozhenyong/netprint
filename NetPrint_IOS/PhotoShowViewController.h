@@ -17,22 +17,13 @@
 #import "EditPhotoViewController.h"
 #import "EditPldViewController.h"
 #import "PldInCollectionView.h"
+#import "CartViewController.h"
+#import "BaseView.h"
 
 
 
 @interface PhotoShowViewController : UIViewController <UICollectionViewDataSource,UICollectionViewDelegateFlowLayout,NSCoding>
-/*
- - (IBAction)back:(id)sender;
 
-
-@property (strong, nonatomic) IBOutlet UILabel *selectShow;
-
-@property (strong, nonatomic) IBOutlet UITableView *photoAlbumTableView;
- 
-@property (strong, nonatomic) IBOutlet UILabel *goodsNameLabel;
-
-@property (strong, nonatomic) IBOutlet UILabel *photoCount;
-*/
 @property (strong, nonatomic) IBOutlet UILabel *errorPhotoNum;
 @property (strong, nonatomic) IBOutlet UILabel *photoCount;
 @property (strong, nonatomic) IBOutlet UILabel *goodsNameLabel;

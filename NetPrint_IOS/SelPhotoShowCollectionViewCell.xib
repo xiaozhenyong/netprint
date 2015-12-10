@@ -6,45 +6,44 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
-        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" tag="50" contentMode="center" reuseIdentifier="selPhotoShowCollectionViewCell" id="Cs9-gE-aa4" customClass="SelPhotoShowCollectionViewCell">
-            <rect key="frame" x="0.0" y="0.0" width="105" height="92"/>
-            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="" id="gTV-IL-0wX" customClass="SelPhotoShowCollectionViewCell">
+            <rect key="frame" x="0.0" y="0.0" width="200" height="200"/>
+            <autoresizingMask key="autoresizingMask"/>
             <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
-                <rect key="frame" x="0.0" y="0.0" width="105" height="92"/>
-                <autoresizingMask key="autoresizingMask"/>
+                <rect key="frame" x="0.0" y="0.0" width="200" height="200"/>
                 <subviews>
-                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Wyu-Ix-tMp">
-                        <rect key="frame" x="0.0" y="0.0" width="105" height="92"/>
+                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="c3e-e7-mdt">
+                        <rect key="frame" x="0.0" y="0.0" width="200" height="200"/>
                     </imageView>
-                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="red_circle" translatesAutoresizingMaskIntoConstraints="NO" id="85T-oX-O1K">
-                        <rect key="frame" x="-1" y="0.0" width="33" height="28"/>
+                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="red_circle" translatesAutoresizingMaskIntoConstraints="NO" id="NGG-MB-3MU">
+                        <rect key="frame" x="1" y="1" width="28" height="28"/>
                     </imageView>
-                    <imageView hidden="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="warn" translatesAutoresizingMaskIntoConstraints="NO" id="pZ8-7u-rb5">
-                        <rect key="frame" x="65" y="1" width="34" height="30"/>
-                    </imageView>
-                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="TSf-Z9-n3u">
-                        <rect key="frame" x="71" y="60" width="26" height="27"/>
-                        <state key="normal" image="edit">
-                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                        </state>
-                    </button>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="1" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="H1M-M6-avd">
-                        <rect key="frame" x="6" y="5" width="20" height="18"/>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="1" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="caJ-hk-w56">
+                        <rect key="frame" x="5" y="4" width="22" height="21"/>
                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                         <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                         <nil key="highlightedColor"/>
                     </label>
+                    <imageView hidden="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="warn" translatesAutoresizingMaskIntoConstraints="NO" id="q1l-1I-Z16">
+                        <rect key="frame" x="145" y="1" width="33" height="34"/>
+                    </imageView>
+                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="FBH-Un-a9V">
+                        <rect key="frame" x="141" y="143" width="37" height="37"/>
+                        <state key="normal" image="edit">
+                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                        </state>
+                    </button>
                 </subviews>
                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
             </view>
-            <size key="customSize" width="105" height="92"/>
+            <size key="customSize" width="200" height="200"/>
             <connections>
-                <outlet property="editPhotoBut" destination="TSf-Z9-n3u" id="hLX-fS-m00"/>
-                <outlet property="photoNum" destination="H1M-M6-avd" id="TKq-o4-wzL"/>
-                <outlet property="selectedPhoto" destination="Wyu-Ix-tMp" id="Ivc-ih-01j"/>
-                <outlet property="warnImage" destination="pZ8-7u-rb5" id="KxY-pK-SlF"/>
+                <outlet property="editPhotoBut" destination="FBH-Un-a9V" id="8zN-OK-xQa"/>
+                <outlet property="photoNum" destination="caJ-hk-w56" id="DdT-I8-R5q"/>
+                <outlet property="selectedPhoto" destination="c3e-e7-mdt" id="Vl0-8X-Mj6"/>
+                <outlet property="warnImage" destination="q1l-1I-Z16" id="Hng-gE-AdH"/>
             </connections>
-            <point key="canvasLocation" x="333.5" y="371"/>
+            <point key="canvasLocation" x="381" y="434"/>
         </collectionViewCell>
     </objects>
     <resources>

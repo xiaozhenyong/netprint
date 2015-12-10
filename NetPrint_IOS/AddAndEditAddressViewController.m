@@ -25,9 +25,14 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    userName = [self.userDic objectForKey:@"u"];
-    password = [self.userDic objectForKey:@"p"];
+//    userName = [self.userDic objectForKey:@"u"];
+//    password = [self.userDic objectForKey:@"p"];
 
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    
+    userName = [userDefaults valueForKey:@"userName"];
+    password = [userDefaults valueForKey:@"password"];
+    
     [self initTextAll];
     [self initPickerViewDelegate];
     [self initPickerViewData];
@@ -273,10 +278,14 @@
         [dicdata removeObjectForKey:@"id"];
         [dicdata setValue:_addId forKey:@"id"];
         if (!jsonValue) {
-            NSLog(@"-----address edit fail----");
+            //NSLog(@"-----address edit fail----");
+            UIAlertView *alertView = [BaseView alertViewNoDelegateWithTitle:@"提示" msg:@"数据请求出错" cancel:@"确定" other:nil];
+            [alertView show];
         }
     }else{
-        NSLog(@"------address fail----");
+       // NSLog(@"------address fail----");
+        UIAlertView *alertView = [BaseView alertViewNoDelegateWithTitle:@"提示" msg:@"服务不可用" cancel:@"确定" other:nil];
+        [alertView show];
     }
     
     [self dismissViewControllerAnimated:YES completion:^{

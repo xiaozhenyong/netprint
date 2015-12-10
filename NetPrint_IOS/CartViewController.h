@@ -18,6 +18,7 @@
 #import "DistributionMsgViewController.h"
 #import "ViewController.h"
 #import "UserIndexViewController.h"
+#import "BaseView.h"
 
 @interface CartViewController : UIViewController<UITableViewDelegate,UITableViewDataSource>
 @property (strong, nonatomic) IBOutlet UITableView *cartShow;

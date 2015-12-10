@@ -7,8 +7,15 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <AlipaySDK/AlipaySDK.h>
+#import "AFNetworking.h"
+#import "DefineData.h"
+#import "Order.h"
+#import "DataSigner.h"
+#import "BaseView.h"
 
-@interface UserMoneyViewController : UIViewController
+
+@interface UserMoneyViewController : UIViewController<UIAlertViewDelegate>
 @property (strong, nonatomic) IBOutlet UIImageView *headImageView;
 @property (strong, nonatomic) IBOutlet UILabel *userNameLabel;
 @property (strong, nonatomic) IBOutlet UILabel *userMoneyLabel;

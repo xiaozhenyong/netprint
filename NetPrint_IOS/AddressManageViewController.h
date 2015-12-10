@@ -24,6 +24,6 @@
 - (IBAction)toUserIndexViewController:(id)sender;
 
 @property (strong,nonatomic)NSMutableArray *addreInfo;
-@property (strong,nonatomic)NSDictionary *userDic;
+//@property (strong,nonatomic)NSDictionary *userDic;
 
 @end

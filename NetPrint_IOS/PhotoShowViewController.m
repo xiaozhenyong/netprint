@@ -7,8 +7,7 @@
 //
 
 #import "PhotoShowViewController.h"
-#import <AssetsLibrary/AssetsLibrary.h>
-#import "CartViewController.h"
+
 
 
 @interface PhotoShowViewController (){
@@ -26,11 +25,11 @@
 
 @implementation PhotoShowViewController
 
-@synthesize dataArray;
 @synthesize appDelegate = _appDelegate;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
     
     pIndex = -1;
     pNum = @"1";
@@ -42,7 +41,7 @@
     goods = [self.goodsArray objectAtIndex:0];
     self.goodsNameLabel.text = goods.name;
     
-    self.photoCount.text = [NSString stringWithFormat:@"%ld",[self.dataArray count]];
+    self.photoCount.text = [NSString stringWithFormat:@"%ld张",[self.dataArray count]];
 
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(getAssetWithNotification:) name:@"editPhotoData" object:nil];
     
@@ -51,6 +50,7 @@
     [self initCollentionView];
     [self getPhotoSizeWithGoods];
     [self initImageAsset];
+    [self countPhoto];
     
 }
 
@@ -69,7 +69,7 @@
         [dicArray removeObjectAtIndex:pIndex];
         [dicArray addObject:dic];
     }else{
-        ALAsset *a=[dataArray objectAtIndex:pIndex];
+        ALAsset *a=[self.dataArray objectAtIndex:pIndex];
         NSDictionary *dic = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInteger:[pNum integerValue]],@"num",[NSString stringWithFormat:@"%@",[[a defaultRepresentation]url]],@"path",@"",@"set", nil];
         [dicArray removeObjectAtIndex:pIndex];
         [dicArray addObject:dic];
@@ -91,8 +91,9 @@
     NSDictionary *dic = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInteger:[pNum integerValue]],@"num",pAsset,@"path",[info valueForKey:@"setV"],@"set", nil];
     [dicArray removeObjectAtIndex:pIndex];
     [dicArray addObject:dic];
-    
+
     [self.showPhoto reloadData];
+    
 }
 
 - (void)getPhotoSizeWithGoods{
@@ -148,7 +149,7 @@
             imageRegion = CGRectMake(80, 80, 942, 1280);
             break;
         default:
-            NSLog(@"bgImage is error");
+            
             break;
     }
     
@@ -163,17 +164,18 @@
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
 
     static NSString *cellName = @"selPhotoShowCollectionViewCell";
-    static BOOL nibPhotoCell = NO;
-    if (!nibPhotoCell) {
+    //static BOOL nibPhotoCell = NO;
+    //if (!nibPhotoCell) {
         NSBundle *classBundle = [NSBundle bundleForClass:[self class]];
         UINib *nib = [UINib nibWithNibName:@"SelPhotoShowCollectionViewCell" bundle:classBundle];
         [collectionView registerNib:nib forCellWithReuseIdentifier:cellName];
-    }
+    //}
     
     SelPhotoShowCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"selPhotoShowCollectionViewCell" forIndexPath:indexPath];
     
     ALAsset *alasset = [self.dataArray objectAtIndex:indexPath.row];
     ALAssetRepresentation *rep = [alasset defaultRepresentation];
+    CGSize imageSize = [rep dimensions];
     CGImageRef ref = [alasset aspectRatioThumbnail];
 
     UIImage *image = [UIImage imageWithCGImage:ref];
@@ -227,15 +229,16 @@
             NSData *jsonData = [NSJSONSerialization dataWithJSONObject:setDic options:NSJSONWritingPrettyPrinted error:nil];
             NSString *jsonString = [[NSString alloc]initWithData:jsonData encoding:NSUTF8StringEncoding];
             
-            NSLog(@"json--->%@",jsonString);
-            
             dic = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInteger: _photoNum],@"num",[NSString stringWithFormat:@"%@",[rep url]],@"path",jsonString,@"set", nil];
         }
         
         [dicArray addObject:dic];
     }
-
-    cell.selectedPhoto.image = image;
+    if (imageSize.width < [photoSize.minpixelheight floatValue]) {
+        cell.warnImage.hidden = NO;
+    }
+    
+    cell.selectedPhoto.image = [self originImage:image scaleToSize:cell.selectedPhoto.frame.size];
     cell.editPhotoBut.tag = [indexPath row]+50;
     [cell.editPhotoBut addTarget:self action:@selector(editPhoto:) forControlEvents:UIControlEventTouchDown];
  
@@ -299,7 +302,10 @@
     
     BOOL saveSuccess = [self insertCartGoodsArray:self.goodsArray assetData:dicArray];
     if (!saveSuccess) {
-        UIAlertView *alertView = [[UIAlertView alloc]initWithTitle:@"Attention" message:@"保存购物车出错！" delegate:nil cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
+        
+        UIAlertView *alertView = [BaseView alertViewNoDelegateWithTitle:@"提示" msg:@"保存购物车出错！" cancel:@"确定" other:nil];
+        
+        //UIAlertView *alertView = [[UIAlertView alloc]initWithTitle:@"Attention" message:@"保存购物车出错！" delegate:nil cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
         [alertView show];
     }else{
         [self presentViewController:cart animated:YES completion:nil];
@@ -336,11 +342,14 @@
         
         BOOL isSuccess = [_appDelegate.managedObjectContext save:&error];
         if (!isSuccess) {
-            NSLog(@"error cart is  %@",error);
+            //NSLog(@"error cart is  %@",error);
+            UIAlertView *alertView = [BaseView alertViewNoDelegateWithTitle:@"提示" msg:@"购物车保存出错" cancel:@"确定" other:nil];
+            [alertView show];
         }
         return  isSuccess;
     }else{
-        NSLog(@"gArray or  aArray is  null");
+        UIAlertView *alertView = [BaseView alertViewNoDelegateWithTitle:@"提示" msg:@"数据为空,请重新选择" cancel:@"确定" other:nil];
+        [alertView show];
     }
     
     return NO;
@@ -374,4 +383,33 @@
     
     return cartId;
 }
+
+//缩放图片
+- (UIImage *)originImage:(UIImage *)image scaleToSize:(CGSize)size{
+    UIGraphicsBeginImageContext(size);
+    [image drawInRect:CGRectMake(0, 0, size.width, size.height)];
+    UIImage *scaleImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return scaleImage;
+}
+
+//统计像素不符合的图片
+- (void)countPhoto{
+    __block NSInteger countPhoto = 0;
+    dispatch_queue_t queue = dispatch_queue_create("com.sjky.xiao", DISPATCH_QUEUE_SERIAL);
+    dispatch_async(queue, ^{
+        for (ALAsset *alasset in self.dataArray) {
+            ALAssetRepresentation *rep = [alasset defaultRepresentation];
+            CGSize imageSize = [rep dimensions];
+            if (imageSize.width < [photoSize.minpixelheight floatValue]) {
+                NSLog(@"-------%ld",countPhoto);
+                countPhoto++;
+            }
+        }
+        dispatch_async(dispatch_get_main_queue(), ^{
+            self.errorPhotoNum.text = [NSString stringWithFormat:@"%ld",countPhoto];
+        });
+    });
+}
+
 @end

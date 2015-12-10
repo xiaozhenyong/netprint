@@ -7,7 +7,10 @@
 //
 
 #import "LoginViewController.h"
+#import "AFNetworking.h"
 #import "RegisterViewController.h"
+#import "DefineData.h"
+#import "BaseView.h"
 
 @interface LoginViewController ()
 
@@ -57,49 +60,44 @@
 }
 
 - (IBAction)loginButton:(id)sender {
-   __block NSString *userFlag = self.user.text;
-   __block NSString *password = self.password.text;
-    __block BOOL loginSuccess = NO;
+    NSString *userFlag = self.user.text;
+    NSString *password = self.password.text;
     
-    NSString *baseUrl = [[NSString alloc]initWithFormat:PHONE_LOGIN];
-    NSURL *url = [NSURL URLWithString:[baseUrl URLEncodedString]];
-    NSString *post = [NSString stringWithFormat:@"userName=%@&pwd=%@&szImei=%@&phoneName=%@",userFlag,password,@"",@""];
-    NSData *postData = [post dataUsingEncoding:NSUTF8StringEncoding];
-    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
-    [request setHTTPMethod:@"POST"];
-    [request setHTTPBody:postData];
+    if ([@"" isEqualToString:userFlag] || [@"手机号/会员名/邮箱" isEqualToString:userFlag]) {
+        [self alertViewWithMessage:@"会员名处不能为空"];
+    }else if ([@"" isEqualToString:password] || [@"密码" isEqualToString:password]){
+        [self alertViewWithMessage:@"密码不能为空"];
+    }else{
     
-    NSOperationQueue *queue = [[NSOperationQueue alloc]init];
-    [NSURLConnection sendAsynchronousRequest:request queue:queue completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
-        NSError *error;
-        if (data) {
-            id jsonValue = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&error];
-            if (!jsonValue || error) {
-                loginSuccess = NO;
-            }
-            NSString *res = [jsonValue objectForKey:@"res"];
-            NSString *userId = nil;
+        NSDictionary *requestDic = [[NSDictionary alloc]initWithObjectsAndKeys:userFlag,@"userName",password,@"pwd",@"",@"szImei",@"",@"phoneName", nil];
+        AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+        [manager POST:PHONE_LOGIN parameters:requestDic success:^(AFHTTPRequestOperation *operation, id responseObject) {
+            NSDictionary *responseValue = responseObject;
+            NSString *res = [responseValue valueForKey:@"res"];
             if ([@"ok" isEqualToString:res]) {
-                userId = [jsonValue objectForKey:@"memberId"];
-                [self addNotificationWithUserName:userFlag password:password userId:userId];
-                loginSuccess = YES;
+                [self addNotificationWithUserName:userFlag password:password userId:[NSString stringWithFormat:@"%@",[responseValue valueForKey:@"memberId"]]];
             }else{
-                NSLog(@"-----get userId  fail------");
+                [self alertViewWithMessage:@"用户不存在"];
             }
-            
-        }else{
-            NSLog(@"----------login fail--------");
-        }
-    }];
-    if (loginSuccess) {
-        [self dismissViewControllerAnimated:YES completion:nil];
+        } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+            [self alertViewWithMessage:@"服务不可用"];
+        }];
     }
 }
 
 - (void)addNotificationWithUserName:(NSString *)_uName password:(NSString *)_uPassword userId:(NSString *)_uId{
-    [self dismissViewControllerAnimated:YES completion:^{
-        NSDictionary *userDic = [[NSDictionary alloc]initWithObjectsAndKeys:_uName,@"userName",_uId,@"uId",_uPassword ,@"password" ,nil];
-        [[NSNotificationCenter defaultCenter]postNotificationName:@"UserLoginCompletionNotification" object:nil userInfo:userDic];
-    }];
+    
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    
+    [userDefaults setObject:_uId forKey:@"uId"];
+    [userDefaults setObject:_uName forKey:@"userName"];
+    [userDefaults setObject:_uPassword forKey:@"password"];
+    [self dismissViewControllerAnimated:YES completion:nil];
+    
+}
+
+- (void)alertViewWithMessage:(NSString *)message{
+    UIAlertView *alertView = [[UIAlertView alloc]initWithTitle:@"" message:message delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+    [alertView show];
 }
 @end

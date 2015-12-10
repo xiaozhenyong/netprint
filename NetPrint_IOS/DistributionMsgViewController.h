@@ -16,6 +16,7 @@
 #import "ViewController.h"
 #import "CartViewController.h"
 #import "UserIndexViewController.h"
+#import "BaseView.h"
 
 @interface DistributionMsgViewController : UIViewController<UIPickerViewDataSource,UIPickerViewDelegate,UITextFieldDelegate,NSURLConnectionDataDelegate >
 @property (strong, nonatomic) IBOutlet UILabel *addressLabel;

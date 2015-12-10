@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import <CoreData/CoreData.h>
+#import <AlipaySDK/AlipaySDK.h>
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate>
 

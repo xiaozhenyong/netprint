@@ -7,8 +7,14 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "AppDelegate.h"
+#import "Goods.h"
+#import "PhotoSize.h"
+#import "PhotoTexture.h"
 
 @interface ViewController : UIViewController
+
+@property (strong,nonatomic)AppDelegate *appDelegate;
 
 //证件照
 - (IBAction)paperPrint:(id)sender;

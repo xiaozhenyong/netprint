@@ -14,6 +14,9 @@
 #import "ViewController.h"
 #import "CartViewController.h"
 #import "UserIndexViewController.h"
+#import <AlipaySDK/AlipaySDK.h>
+#import "Order.h"
+#import "DataSigner.h"
 
 @interface PayOrderViewController : UIViewController<UITableViewDelegate,UITableViewDataSource,UIAlertViewDelegate>
 @property (strong, nonatomic) IBOutlet UITableView *cartShowTableView;
@@ -24,6 +27,7 @@
 - (IBAction)alipayButton:(id)sender;
 - (IBAction)balancePayButton:(id)sender;
 
+- (IBAction)backPage:(id)sender;
 
 - (IBAction)toViewController:(id)sender;
 - (IBAction)toCartViewController:(id)sender;
@@ -31,4 +35,6 @@
 
 
 @property (strong,nonatomic)NSArray *cartArray;
+@property (strong,nonatomic)NSMutableArray *goodsInfoArray;
+
 @end

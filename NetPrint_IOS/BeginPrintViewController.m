@@ -31,8 +31,6 @@
     
     _appDelegate = (AppDelegate *)[[UIApplication sharedApplication]delegate];
     
-//    [self startRequest];
-
     [self initTextField];
     [self initPhotoSizePickerView];
     [self initPhotoTexturePickerView];
@@ -187,13 +185,7 @@
     
     
     if ([_assets count] < 1) {
-        UIAlertView *alertView =
-        [[UIAlertView alloc] initWithTitle:@"Attention"
-                                   message:@"请先选择照片"
-                                  delegate:nil
-                         cancelButtonTitle:nil
-                         otherButtonTitles:@"OK", nil];
-        
+        UIAlertView *alertView = [BaseView alertViewNoDelegateWithTitle:@"提示" msg:@"请先选择照片" cancel:nil other:@"确定"];
         [alertView show];
     }else{
     
@@ -272,69 +264,13 @@
     
     if (!asset.defaultRepresentation)
     {
-        UIAlertView *alertView =
-        [[UIAlertView alloc] initWithTitle:@"Attention"
-                                   message:@"Your asset has not yet been downloaded to your device"
-                                  delegate:nil
-                         cancelButtonTitle:nil
-                         otherButtonTitles:@"OK", nil];
-        
+        UIAlertView *alertView = [BaseView alertViewNoDelegateWithTitle:@"提示" msg:@"无照片" cancel:nil other:nil];
         [alertView show];
     }
     
 //    return (picker.selectedAssets.count < 10 && asset.defaultRepresentation != nil);
     return asset.defaultRepresentation != nil;
 }
-
-
-- (void)startRequest{
-    /*异步POST请求
-    NSString *baseUrl = [[NSString alloc] initWithFormat:PHONE_PHOTOS_DETAIL];
-    NSURL *url = [NSURL URLWithString:[baseUrl URLEncodedString]];
-    NSString *post = [NSString stringWithFormat:@"versionNumber=%@",VERSION];
-    NSData *postData = [post dataUsingEncoding:NSUTF8StringEncoding];
-    
-    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
-    [request setHTTPMethod:@"POST"];
-    [request setHTTPBody:postData];
-    
-    NSOperationQueue *queue = [[NSOperationQueue alloc]init];
-    [NSURLConnection sendAsynchronousRequest:request
-                                       queue:queue
-                           completionHandler:
-     ^(NSURLResponse *response, NSData *d,NSError *er){
-        
-        [self showData:d];
-    }];*/
-    NSString *url = [[NSString alloc]initWithFormat:PHONE_PHOTOS_DETAIL,VERSION];
-    NSURL *_url = [NSURL URLWithString:[url URLEncodedString]];
-    NSMutableURLRequest *request = [[NSMutableURLRequest alloc]initWithURL:_url];
-    [request setHTTPMethod:@"GET"];
-    NSData *d = [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil];
-    [self showData:d];
-
-}
-
-- (void) showData:(NSData *)data{
-    
-    NSError *error;
-    if (data) {
-        id jsonValue = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&error];
-        if (!jsonValue || error) {
-            NSLog(@"fail");
-        }
-        NSMutableArray *photoSize= [jsonValue objectForKey:@"phonephotosize"];
-        NSMutableArray *photoTexture = [jsonValue objectForKey:@"phonephototexture"];
-        NSMutableArray *goods = [jsonValue objectForKey:@"goods"];
-
-        [self insertDataForGoods:goods];
-        [self insertDataForPhotoSize:photoSize];
-        [self insertDataForPhotoTexture:photoTexture];
-    }else{
-        NSLog(@"fail");
-    }
-}
-
 
 /*
     type=0 常规尺寸
@@ -375,121 +311,6 @@
     NSMutableArray *array = [[_appDelegate.managedObjectContext executeFetchRequest:request error:&error]mutableCopy];
     
     return array;
-}
-
-/*
-  删除操作
- */
-- (void)deleteData:(NSString *)tableName{
-
-    NSError *error = nil;
-    NSFetchRequest *request = [[NSFetchRequest alloc]init];
-    NSEntityDescription *table = [NSEntityDescription entityForName:tableName inManagedObjectContext:_appDelegate.managedObjectContext];
-    [request setEntity:table];
-    
-    NSMutableArray *array = [[_appDelegate.managedObjectContext  executeFetchRequest:request error:&error]mutableCopy];
-    if (!array) {
-        NSLog(@"Error delete table is %@",error);
-    }else{
-        if ([@"Goods" isEqualToString:tableName]) {
-            for (Goods *good in array) {
-                [_appDelegate.managedObjectContext deleteObject:good];
-            }
-        }else if ([@"PhotoSize" isEqualToString:tableName]){
-            for (PhotoSize *ps in array) {
-                [_appDelegate.managedObjectContext deleteObject:ps];
-            }
-        }else{
-            for (PhotoTexture *pt in array) {
-                [_appDelegate.managedObjectContext deleteObject:pt];
-            }
-        }
-        if ([_appDelegate.managedObjectContext save:&error]) {
-            NSLog(@"Error : %@",error);
-        }
-    }
-}
-
-/*
-    插入操作为非线程安全
- */
-- (void) insertDataForPhotoSize:(NSMutableArray *)photoSizeArray{
-    NSError *error = nil;
-    if (photoSizeArray) {
-        for (NSDictionary *dic in photoSizeArray) {
-            PhotoSize *ps = (PhotoSize *)[NSEntityDescription insertNewObjectForEntityForName:@"PhotoSize" inManagedObjectContext:_appDelegate.managedObjectContext];
-            
-            [ps setName:[dic objectForKey:@"name"]];
-            [ps setPhotosizeid:[self nsNumberToNSString:[dic objectForKey:@"photosizeid"]]];
-            [ps setMixpixelwidth:[self nsNumberToNSString:[dic objectForKey:@"mixpixelwidth"]]];
-            [ps setMinpixelheight:[self nsNumberToNSString:[dic objectForKey:@"minpixelheight"]]];
-            [ps setFactwidth:[self nsNumberToNSString:[dic objectForKey:@"factwidth"]]];
-            [ps setFactheight:[self nsNumberToNSString:[dic objectForKey:@"factheight"]]];
-            [ps setType:[self nsNumberToNSString:[dic objectForKey:@"type"]]];
-            [ps setOrder:[self nsNumberToNSString:[dic objectForKey:@"order"]]];
-            
-            BOOL isSuccess = [_appDelegate.managedObjectContext save:&error];
-            if (!isSuccess) {
-                NSLog(@"Error photosize is %@",error);
-            }
-        }
-
-    }else{
-        NSLog(@"photosize is NULL");
-    }
-}
-
-- (void) insertDataForPhotoTexture:(NSMutableArray *)photoTextureArray{
-    NSError *error = nil;
-    if (photoTextureArray) {
-        for (NSDictionary *dic in photoTextureArray) {
-            PhotoTexture *pt = (PhotoTexture *)[NSEntityDescription insertNewObjectForEntityForName:@"PhotoTexture" inManagedObjectContext:_appDelegate.managedObjectContext];
-            [pt setName:[dic objectForKey:@"name"]];
-            [pt setPhototextureid:[self nsNumberToNSString:[dic objectForKey:@"phototextureid"]]];
-            [pt setType:[self nsNumberToNSString:[dic objectForKey:@"type"]]];
-            [pt setSort:[self nsNumberToNSString:[dic objectForKey:@"sort"]]];
-            
-            BOOL isSuccess = [_appDelegate.managedObjectContext save:&error];
-            if (!isSuccess) {
-                NSLog(@"Error phototexture is %@",error);
-            }
-        }
-    }else{
-        NSLog(@"photoTextrue is NULL");
-    }
-}
-
-- (void) insertDataForGoods:(NSMutableArray *)goodsArray{
-    NSError *error = nil;
-    if (goodsArray) {
-        for (NSDictionary *dic in goodsArray) {
-            Goods *g = (Goods *)[NSEntityDescription insertNewObjectForEntityForName:@"Goods" inManagedObjectContext:_appDelegate.managedObjectContext];
-            
-            [g setGid:[NSString stringWithFormat:@"%@",[dic valueForKey:@"id"]]];
-            [g setName:[dic valueForKey:@"name"]];
-            
-            [g setMarketprice:[NSString stringWithFormat:@"%@",[dic valueForKey:@"marketprice"]]];
-            
-            
-            [g setPhotosizeid:[NSString stringWithFormat:@"%@",[dic valueForKey:@"photosizeid"]]];
-            
-            [g setPhototextureid:[NSString stringWithFormat:@"%@",[dic valueForKey:@"phototextureid"]]];
-             
-            [g setPhotowrapid:[NSString stringWithFormat:@"%@",[dic valueForKey:@"photowrapid"]]];
-            
-            BOOL isSuccess = [_appDelegate.managedObjectContext save:&error];
-            if (!isSuccess) {
-                NSLog(@"Error goods is %@",error);
-            }
-        }
-    }else{
-        NSLog(@"goods is NULL");
-    }
-}
-
-- (NSString *)nsNumberToNSString:(NSNumber *)number{
-    NSNumberFormatter *formatter = [[NSNumberFormatter alloc]init];
-    return [formatter stringFromNumber:number];
 }
 
 @end

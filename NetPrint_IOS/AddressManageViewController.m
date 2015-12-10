@@ -21,6 +21,10 @@
     
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(getEditAddressNotification:) name:@"editAddressInfo" object:nil];
     
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    userName = [userDefaults valueForKey:@"userName"];
+    password = [userDefaults valueForKey:@"password"];
+    
     
     [self initAddressInfo];
     [self initTableView];
@@ -47,9 +51,6 @@
 
 - (void)initAddressInfo{
     
-    userName = [self.userDic objectForKey:@"u"];
-    password = [self.userDic objectForKey:@"p"];
-    
     NSError *error;
     NSString *baseUrl = [[NSString alloc]initWithFormat:PHONE_ADDRES];
     NSURL *url = [NSURL URLWithString:[baseUrl URLEncodedString]];
@@ -63,17 +64,20 @@
     if (data) {
         id jsonValue = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
         if (!jsonValue || error) {
-            NSLog(@"--jsonvalue fail-");
+            UIAlertView *alertView = [BaseView alertViewNoDelegateWithTitle:@"提示" msg:@"数据请求出错" cancel:@"确定" other:nil];
+            [alertView show];
         }
         NSString *res = [jsonValue objectForKey:@"res"];
         if ([@"success" isEqualToString:res]) {
             self.addreInfo = [jsonValue objectForKey:@"addrs"];
         }else{
-            NSLog(@"-----------get  money fail-----------");
+            UIAlertView *alertView = [BaseView alertViewNoDelegateWithTitle:@"提示" msg:@"数据请求出错" cancel:@"确定" other:nil];
+            [alertView show];
         }
         
     }else{
-        NSLog(@"-----------money fail-----------");
+        UIAlertView *alertView = [BaseView alertViewNoDelegateWithTitle:@"提示" msg:@"服务不可用" cancel:@"确定" other:nil];
+        [alertView show];
     }
     
 
@@ -84,6 +88,7 @@
     self.addressShow.delegate = self;
     self.addressShow.dataSource = self;
     [self.addressShow registerClass:[AddrShowTableViewCell class] forCellReuseIdentifier:@"addrShowTableViewCell"];
+    self.addressShow.tableFooterView = [[UIView alloc]initWithFrame:CGRectZero];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -106,12 +111,12 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
 
     static NSString *customCell = @"addrShowTableViewCell";
-    static BOOL nibsRegistered = NO;
-    if (!nibsRegistered) {
+    //static BOOL nibsRegistered = NO;
+    //if (!nibsRegistered) {
         NSBundle *classBundle = [NSBundle bundleForClass:[self class]];
         UINib *nib = [UINib nibWithNibName:@"AddrShowTableViewCell" bundle:classBundle];
         [tableView registerNib:nib  forCellReuseIdentifier:customCell];
-    }
+    //}
     
     AddrShowTableViewCell *addrShowCell = [tableView dequeueReusableCellWithIdentifier:customCell forIndexPath:indexPath];
     NSUInteger row = [indexPath row];
@@ -189,7 +194,9 @@
     if (data) {
         id jsonValue = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
         if (!jsonValue) {
-            NSLog(@"-----address setDefault fail----");
+           // NSLog(@"-----address setDefault fail----");
+            UIAlertView *alertView = [BaseView alertViewNoDelegateWithTitle:@"提示" msg:@"数据请求出错" cancel:@"确定" other:nil];
+            [alertView show];
         }else{
             for (NSMutableDictionary *dic in self.addreInfo) {
                 NSString *addrId = [NSString stringWithFormat:@"%@",[dic valueForKey:@"id"]];
@@ -202,10 +209,10 @@
             }
             
             [self.addressShow reloadData];
-            NSLog(@"------reload  successs=-----");
         }
     }else{
-        NSLog(@"-----setDefault fail-----");
+        UIAlertView *alertView = [BaseView alertViewNoDelegateWithTitle:@"提示" msg:@"服务不可用" cancel:@"确定" other:nil];
+        [alertView show];
     }
 }
 - (void) editAddressButton:(id)sender{
@@ -214,7 +221,7 @@
     AddAndEditAddressViewController *addAndEdit = [storyBoard instantiateViewControllerWithIdentifier:@"addAndEditAddressViewController"];
     
     addAndEdit.addressInfo = self.addreInfo;
-    addAndEdit.userDic = self.userDic;
+//    addAndEdit.userDic = self.userDic;
     [self presentViewController:addAndEdit animated:YES completion:nil];
     
 }
@@ -238,7 +245,8 @@
     if (data) {
         id jsonValue = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
         if (!jsonValue) {
-            NSLog(@"-----address delete fail----");
+            UIAlertView *alertView = [BaseView alertViewNoDelegateWithTitle:@"提示" msg:@"数据请求出错" cancel:@"确定" other:nil];
+            [alertView show];
         }else{
             for (NSMutableDictionary *dic in self.addreInfo) {
                 NSString *addrId = [NSString stringWithFormat:@"%@",[dic valueForKey:@"id"]];
@@ -250,7 +258,8 @@
             [self.addressShow reloadData];
         }
     }else{
-        NSLog(@"-----delete fail-----");
+        UIAlertView *alertView = [BaseView alertViewNoDelegateWithTitle:@"提示" msg:@"服务不可用" cancel:@"确定" other:nil];
+        [alertView show];
     }
 
 }
@@ -272,7 +281,7 @@
     UIStoryboard *storyBoard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     AddAndEditAddressViewController *addAndEdit = [storyBoard instantiateViewControllerWithIdentifier:@"addAndEditAddressViewController"];
     addAndEdit.addressInfo = nil;
-    addAndEdit.userDic = self.userDic;
+//    addAndEdit.userDic = self.userDic;
     [self presentViewController:addAndEdit animated:YES completion:nil];
 }
 

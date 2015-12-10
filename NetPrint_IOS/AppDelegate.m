@@ -52,6 +52,8 @@
     NSPersistentStoreCoordinator *coordinator = [self persistentStoreCoordinator];
     if (coordinator) {
         _managedObjectContext = [[NSManagedObjectContext alloc] init];
+        //_managedObjectContext = [[NSManagedObjectContext alloc]initWithConcurrencyType:NSPrivateQueueConcurrencyType];
+        //_managedObjectContext = [[NSManagedObjectContext alloc]initWithConcurrencyType:NSMainQueueConcurrencyType];
         [_managedObjectContext setPersistentStoreCoordinator:coordinator];
     }
     return _managedObjectContext;
@@ -63,10 +65,11 @@
         return _managedObjectModel;
     }
     
-    NSURL *modelURL = [[NSBundle mainBundle] URLForResource:@"iosprint" withExtension:@"momd"];
+    NSURL *modelURL = [[NSBundle mainBundle]URLForResource:@"iosprint" withExtension:@"momd"];
     _managedObjectModel = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];
     return _managedObjectModel;
 }
+
 
 - (NSPersistentStoreCoordinator *)persistentStoreCoordinator{
     if (_persistentStoreCoordinator) {
@@ -100,5 +103,31 @@
     }
 }
 
+- (BOOL)application:(UIApplication *)application
+            openURL:(NSURL *)url
+  sourceApplication:(NSString *)sourceApplication
+         annotation:(id)annotation {
+    
+    //跳转支付宝钱包进行支付，处理支付结果
+    [[AlipaySDK defaultService] processOrderWithPaymentResult:url standbyCallback:^(NSDictionary *resultDic) {
+        NSString *resultStatus = [resultDic valueForKey:@"resultStatus"];
+        if ([@"9000" isEqualToString:resultStatus]) {
+            [self showPayMsg:@"充值成功"];
+        }else if ([@"4000" isEqualToString:resultStatus]){
+            [self showPayMsg:@"充值失败，请与客服联系"];
+        }else if([@"6002" isEqualToString:resultStatus]){
+            [self showPayMsg:@"网络连接出错，请检查网络"];
+        }
+    }];
+    
+    return YES;
+}
+
+- (void)showPayMsg:(NSString *)msg{
+    UIAlertView *msgAlertView = [[UIAlertView alloc]initWithTitle:@"提示" message:msg delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+    msgAlertView.alertViewStyle = UIAlertActionStyleDefault;
+    [msgAlertView show];
+    
+}
 
 @end

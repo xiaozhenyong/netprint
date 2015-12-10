@@ -17,10 +17,12 @@
 #import "ViewController.h"
 #import "CartViewController.h"
 #import "UserOrdersViewController.h"
+#import "BaseView.h"
 
 @interface UserIndexViewController : UIViewController
 
 @property (strong, nonatomic) IBOutlet UILabel *userNameLabel;
+@property (strong, nonatomic) IBOutlet UIImageView *userAvatarImageView;
 
 
 - (IBAction)userOrder:(id)sender;
@@ -39,8 +41,5 @@
 
 - (IBAction)toCartViewController:(id)sender;
 
-@property (strong,nonatomic)NSString *userName;
-@property (strong,nonatomic)NSString *password;
-@property (strong,nonatomic)NSString *userId;
 
 @end

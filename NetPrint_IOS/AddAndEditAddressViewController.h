@@ -11,6 +11,7 @@
 #import "DefineData.h"
 #import "NSString+URLEncoding.h"
 #import "NSNumber+Message.h"
+#import "BaseView.h"
 
 @interface AddAndEditAddressViewController : UIViewController<UIPickerViewDataSource,UIPickerViewDelegate,UITextFieldDelegate,UITextViewDelegate>
 @property (strong, nonatomic) IBOutlet UITextField *deliverManTextField;
@@ -27,5 +28,5 @@
 @property (strong,nonatomic)Address *addr;
 @property (strong,nonatomic)NSString *areaValue;
 @property (strong,nonatomic)NSArray *addressInfo;
-@property (strong,nonatomic)NSDictionary *userDic;
+//@property (strong,nonatomic)NSDictionary *userDic;
 @end

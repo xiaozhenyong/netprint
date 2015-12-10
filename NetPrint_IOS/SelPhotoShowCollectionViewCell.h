@@ -2,7 +2,7 @@
 //  SelPhotoShowCollectionViewCell.h
 //  NetPrint_IOS
 //
-//  Created by xiaozhenyong on 15/7/25.
+//  Created by sjkysjky on 15/12/8.
 //  Copyright (c) 2015年 世纪开元. All rights reserved.
 //
 

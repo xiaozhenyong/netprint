@@ -7,43 +7,43 @@
 //
 
 #import "UserIndexViewController.h"
+#import "UserCouponsShowViewController.h"
+#import "UserSafeViewController.h"
 
 
 
 @interface UserIndexViewController (){
     UIStoryboard *storyboard;
-    NSDictionary *userInfo;
+    NSString *userId,*password,*userName;
 }
 
 @end
 
 @implementation UserIndexViewController
 
-@synthesize userId,password,userName;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    [self userInfoWitUserDefaults];
+    [self initPage];
+}
 
+- (void)userInfoWitUserDefaults{
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    userId = [userDefaults valueForKey:@"uId"];
+    userName = [userDefaults valueForKey:@"userName"];
+    password = [userDefaults valueForKey:@"password"];
+}
+
+- (void)initPage{
+    self.userNameLabel.text = userName;
     
-    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(getUserMsgWithNotification:) name:@"UserLoginCompletionNotification" object:nil];
+    storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
 }
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
-}
-
-- (void) getUserMsgWithNotification:(NSNotification *)notification{
-
-    NSDictionary *dic = [notification userInfo];
-    self.userName = [dic objectForKey:@"userName"];
-    self.userId = [dic objectForKey:@"uId"];
-    self.password = [dic objectForKey:@"password"];
-    
-    self.userNameLabel.text = userName;
-    
-    userInfo = dic;
 }
 
 /*
@@ -57,11 +57,11 @@
 */
 
 - (IBAction)userOrder:(id)sender {
-    if (userInfo == nil) {
+    if (userName == nil) {
         LoginViewController *loginViewCon = [storyboard instantiateViewControllerWithIdentifier:@"loginViewController"];
         [self presentViewController:loginViewCon animated:YES completion:nil];
     }else{
-        NSDictionary *requestDic = [[NSDictionary alloc]initWithObjectsAndKeys:self.userName,@"userName",self.password,@"pwd",@"0",@"type",@"1",@"page", nil];
+        NSDictionary *requestDic = [[NSDictionary alloc]initWithObjectsAndKeys:userName,@"userName",password,@"pwd",@"0",@"type",@"1",@"page", nil];
         
         
         AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
@@ -71,116 +71,121 @@
             NSString *res = [responseValue valueForKey:@"res"];
             if ([res isEqualToString:@"success"]) {
                 NSArray *info = [responseValue valueForKey:@"info"];
-                NSString *ordersValue = [responseValue valueForKey:@"info"];
-                NSLog(@"info------->%@",ordersValue);
+                
                 UserOrdersViewController *userOrdersView = [storyboard instantiateViewControllerWithIdentifier:@"userOrdersViewController"];
                 userOrdersView.ordersArray = [info mutableCopy];
-                userOrdersView.userInfo = userInfo;
+ //               userOrdersView.userInfo = userInfo;
                 [self presentViewController:userOrdersView animated:YES completion:nil];
                 
             }else{
-                NSLog(@"Server  is Error");
+               // NSLog(@"Server  is Error");
+                UIAlertView *alertView = [BaseView alertViewNoDelegateWithTitle:@"提示" msg:@"请求出错，或服务不可用" cancel:@"确定" other:nil];
+                [alertView show];
             }
             
         } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-            NSLog(@"UserOrder Error------->%@",error);
+            //NSLog(@"UserOrder Error------->%@",error);
+            UIAlertView *alertView = [BaseView alertViewNoDelegateWithTitle:@"提示" msg:@"请求出错，或服务不可用" cancel:@"确定" other:nil];
+            [alertView show];
         }];
         
     }
 }
 
 - (IBAction)userMoney:(id)sender {
-    
-    NSArray *userInfoArray = [[NSMutableArray alloc]init];
-    /*
-    __block NSInteger infoId = 0;
-    __block NSString *infoUserId = nil;
-    __block float infoMoney = 0.0;
-    __block NSString *infoMemberAvatar = nil;
-    __block NSInteger haveInfo = 0;
-     */
-    NSError *error;
-    NSString *baseUrl = [[NSString alloc]initWithFormat:PHONE_MEMBER_MONEY];
-    NSURL *url = [NSURL URLWithString:[baseUrl URLEncodedString]];
-    NSString *post = [NSString stringWithFormat:@"userName=%@&pwd=%@",self.userName,self.password];
-    NSData *postData = [post dataUsingEncoding:NSUTF8StringEncoding];
-    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
-    [request setHTTPMethod:@"POST"];
-    [request setHTTPBody:postData];
-    
-    NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:&error];
-    if (data) {
-        id jsonValue = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
-        if (!jsonValue || error) {
-            NSLog(@"--jsonvalue fail-");
-        }
-        NSString *res = [jsonValue objectForKey:@"res"];
-        if ([@"success" isEqualToString:res]) {
-            userInfoArray = [jsonValue objectForKey:@"info"];
-        }else{
-            NSLog(@"-----------get  money fail-----------");
-        }
-
+    if (userName == nil) {
+        LoginViewController *loginViewCon = [storyboard instantiateViewControllerWithIdentifier:@"loginViewController"];
+        [self presentViewController:loginViewCon animated:YES completion:nil];
     }else{
-        NSLog(@"-----------money fail-----------");
-    }
-    /*
-    NSOperationQueue *queue = [[NSOperationQueue alloc]init];
-    [NSURLConnection sendAsynchronousRequest:request queue:queue completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
-     
-        if (data) {
-            id jsonValue = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&error];
-            if (!jsonValue || error) {
-                
-                NSLog(@"--jsonvalue fail-");
-                
-            }
-            NSString *res = [jsonValue objectForKey:@"res"];
-            if ([@"success" isEqualToString:res]) {
-                
-               NSArray  *userInfo = [jsonValue objectForKey:@"info"];
-               
-             }else{
+        NSDictionary *requestDic = [[NSDictionary alloc]initWithObjectsAndKeys:userName,@"userName",password,@"pwd", nil];
+        AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+        [manager POST:PHONE_MEMBER_MONEY parameters:requestDic success:^(AFHTTPRequestOperation *operation, id responseObject) {
             
-                NSLog(@"-----------get  money fail-----------");
+            NSDictionary *responseValue = responseObject;
+            NSString *res = [responseObject objectForKey:@"res"];
+            if ([@"success" isEqualToString:res]) {
+                NSArray *userInfoArray = [responseValue objectForKey:@"info"];
+                if (userInfoArray) {
+                    UserMoneyViewController *userMoney = [storyboard instantiateViewControllerWithIdentifier:@"userMoneyViewController"];
+                    [userInfoArray setValue:userId forKey:@"uid"];
+                    userMoney.mUserInfo = userInfoArray;
+                    
+                    userMoney.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
+                    [self presentViewController:userMoney animated:YES completion:nil];
+                }else{
+                    NSLog(@"----------no---------");
+                }
+
+            }else{
+                
+                UIAlertView *alertView = [BaseView alertViewNoDelegateWithTitle:@"提示" msg:@"请求数据出错" cancel:@"确定" other:nil];
+                [alertView show];
             }
-        }else{
-     
-        }
-    }];
-    */
-    
-    if (userInfoArray) {
-        UserMoneyViewController *userMoney = [storyboard instantiateViewControllerWithIdentifier:@"userMoneyViewController"];
-        
-        userMoney.mUserInfo = userInfoArray;
-        
-        userMoney.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
-        [self presentViewController:userMoney animated:YES completion:nil];
-    }else{
-        NSLog(@"----------no---------");
+
+            
+        } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+            UIAlertView *alertView = [BaseView alertViewNoDelegateWithTitle:@"提示" msg:@"服务不可用" cancel:@"确定" other:nil];
+            [alertView show];
+        }];
     }
-    
 }
 
 - (IBAction)userAddressManage:(id)sender {
     
         AddressManageViewController *addrManage = [storyboard instantiateViewControllerWithIdentifier:@"addressManageViewController"];
-    addrManage.userDic = userInfo;
-    //[NSDictionary dictionaryWithObjectsAndKeys:userName,@"userName",password,@"password",userId,@"uId", nil];
     
         addrManage.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
         [self presentViewController:addrManage animated:YES completion:nil];
 }
 
 - (IBAction)userCoupon:(id)sender {
+    if (userName == nil) {
+        LoginViewController *loginViewCon = [storyboard instantiateViewControllerWithIdentifier:@"loginViewController"];
+        [self presentViewController:loginViewCon animated:YES completion:nil];
+    }else{
+        NSDictionary *requestDic = [[NSDictionary alloc]initWithObjectsAndKeys:userName,@"userName",password,@"pwd", nil];
+        
+        
+        AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+        [manager POST:PHONE_MEMBER_COUPONS parameters:requestDic success:^(AFHTTPRequestOperation *operation, id responseObject) {
+            
+            NSDictionary *responseValue = responseObject;
+            NSString *res = [responseValue valueForKey:@"res"];
+            if ([res isEqualToString:@"success"]) {
+                NSDictionary *info = [responseValue valueForKey:@"info"];
+                NSArray *list = [info valueForKey:@"list"];
+                UserCouponsShowViewController *userCoupons = [storyboard instantiateViewControllerWithIdentifier:@"userCouponsShowViewController"];
+                userCoupons.userCouponsArray = list;                //               userOrdersView.userInfo = userInfo;
+                [self presentViewController:userCoupons animated:YES completion:nil];
+                
+            }else{
+                // NSLog(@"Server  is Error");
+                UIAlertView *alertView = [BaseView alertViewNoDelegateWithTitle:@"提示" msg:@"请求出错，或服务不可用" cancel:@"确定" other:nil];
+                [alertView show];
+            }
+            
+        } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+            //NSLog(@"UserOrder Error------->%@",error);
+            UIAlertView *alertView = [BaseView alertViewNoDelegateWithTitle:@"提示" msg:@"请求出错，或服务不可用" cancel:@"确定" other:nil];
+            [alertView show];
+        }];
+        
+    }
+
 }
 
 - (IBAction)userMsgSafe:(id)sender {
+    UserSafeViewController *userSafe = [storyboard instantiateViewControllerWithIdentifier:@"userSafeViewController"];
+    [self presentViewController:userSafe animated:YES completion:nil];
 }
 
 - (IBAction)userReload:(id)sender {
     LoginViewController *login = [storyboard instantiateViewControllerWithIdentifier:@"loginViewController"];
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    
+    [userDefaults setObject:@"uId" forKey:@""];
+    [userDefaults setObject:@"userName" forKey:@""];
+    [userDefaults setObject:@"password" forKey:@""];
     login.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
     [self presentViewController:login
                        animated:YES completion:nil];
@@ -197,10 +202,14 @@
 }
 
 - (void)gotoUIViewController:(UIViewController *)view{
+    
+    [self presentViewController:view animated:YES completion:nil];
+    /*
     [self presentViewController:view animated:YES completion:^{
         if (userInfo) {
             [[NSNotificationCenter defaultCenter]postNotificationName:@"userInfo" object:nil userInfo:userInfo];
         }
     }];
+     */
 }
 @end
